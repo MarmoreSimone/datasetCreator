@@ -4,6 +4,7 @@ import entity.ClassMetrics;
 import entity.ReleaseInfo;
 import org.eclipse.jgit.api.Git;
 import temporary.ConsoleCsvPrinter;
+import utils.CsvExporter;
 import utils.GitUtils;
 import utils.csvReader;
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class Main {
     private static final String releasesFilePath = "C:/Users/simor/Desktop/progetto falessi/OPENJPAVersionInfo.csv";//file generato dal codice di falessi
     private static final double releasesPercentage = 0.02;//percentuale di classi da prendere
     private static final String repoOpenjpaPath = "C:/Users/simor/Desktop/openjpa";
-    private static final String outputDatasetPath = "C:/Users/simor/Desktop/datasetCreator";
+    private static final String outputDatasetPath = "C:/Users/simor/Desktop/datasetCreator/openjpa_dataset.csv";
 
 
     public static void main(String[] args) throws IOException{
@@ -54,8 +55,7 @@ public class Main {
 
         }
 
-        ConsoleCsvPrinter.printDataset(datasetFinale);
-
+        //ConsoleCsvPrinter.printDataset(datasetFinale);
 
         // 4. RITORNO AL MASTER
         System.out.println("Ripristino repository al branch master...");
@@ -65,5 +65,9 @@ public class Main {
         } catch (Exception e) {
             System.err.println("Errore nel tornare al master: " + e.getMessage());
         }
+
+        //scrivo dati sul csv
+        CsvExporter.exportToCsv(datasetFinale,outputDatasetPath);
+
     }
 }

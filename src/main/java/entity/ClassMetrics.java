@@ -40,10 +40,12 @@ public class ClassMetrics {
     }
 
     public String toCsvRow() {
-        // %s indica una Stringa, %d indica un numero intero (digit)
-        return String.format("%s,%s,%s",
-                className,
+        // %d si usa per gli interi (LOC, NRtotal)
+        return String.format("%s,%s,%d,%d,%s",
                 releaseID,
+                className,
+                LOC,
+                NRtotal,
                 buggy
         );
     }
