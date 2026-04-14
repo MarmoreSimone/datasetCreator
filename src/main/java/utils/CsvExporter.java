@@ -28,11 +28,11 @@ public class CsvExporter {
                 writer.newLine();
             }
 
-            System.out.println("✅ Dataset creato con successo: " + outputDatasetPath);
-            System.out.println("📊 Totale righe: " + metricsList.size());
+            System.out.println("Dataset creato con successo: " + outputDatasetPath);
+            System.out.println("Totale righe: " + metricsList.size());
 
         } catch (IOException e) {
-            System.err.println("❌ Errore critico durante la scrittura del CSV: " + e.getMessage());
+            System.err.println("Errore critico durante la scrittura del CSV: " + e.getMessage());
         }
     }
 }
