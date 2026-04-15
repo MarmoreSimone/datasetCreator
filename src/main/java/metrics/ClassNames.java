@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+//classe che recupera tutti i file che terminano con .java, escludiamo le classi di test
 public class ClassNames {
 
     public static List<String> getJavaClassesName(String repoPath) throws IOException {
@@ -19,11 +20,21 @@ public class ClassNames {
                     .filter(p -> p.toString().toLowerCase().endsWith(".java"))
                     // Escludiamo i test ma teniamo tutto il resto della struttura
                     .filter(p -> !p.toString().contains("/test/") && !p.toString().contains("\\test\\"))
-                    // TRICK: prendiamo il percorso dalla root del progetto in poi
-                    .map(p -> projectRoot.relativize(p).toString())
+                    // prendiamo il percorso dalla root del progetto in poi
+                    .map(p -> convertPath(projectRoot.relativize(p).toString()))//mantengo solo la parte relativa al file del progetto
                     .collect(Collectors.toList());
         }
     }
 
 
+    public static String convertPath(String filePath) {
+
+        String convertedPath = filePath.replace("\\", "/");
+        if (convertedPath.startsWith("/")) {
+            convertedPath = convertedPath.substring(1);
+        }
+
+        return convertedPath;
+
+    }
 }

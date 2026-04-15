@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+//classe che si occupa di contare le righe di codice di ogni classe, consideriamo anche le righe vuote
 public class CountLOC {
 
     public static int countLoc(String repoPath, String relativeFilePath) {

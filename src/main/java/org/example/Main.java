@@ -2,8 +2,8 @@ package org.example;
 
 import entity.ClassMetrics;
 import entity.ReleaseInfo;
+import metrics.NR;
 import org.eclipse.jgit.api.Git;
-import temporary.ConsoleCsvPrinter;
 import utils.CsvExporter;
 import utils.GitUtils;
 import utils.csvReader;
@@ -14,53 +14,55 @@ import java.util.List;
 
 import static metrics.ClassNames.getJavaClassesName;
 import static metrics.CountLOC.countLoc;
-import static metrics.NRtotal.NRtotal;
+
 
 public class Main {
 
-    /*
     private static final String releasesFilePath = "C:/Users/simor/Desktop/progetto falessi/OPENJPAVersionInfo.csv";//file generato dal codice di falessi
-    private static final double releasesPercentage = 0.02;//percentuale di classi da prendere
+    private static final double releasesPercentage = 0.03;//percentuale di classi da prendere
     private static final String repoOpenjpaPath = "C:/Users/simor/Desktop/openjpa";
     private static final String outputDatasetPath = "C:/Users/simor/Desktop/datasetCreator/openjpa_dataset.csv";
-    */
 
-    private static final String releasesFilePath = "C:/Users/enrico/IdeaProjects/datasetCreator/OPENJPAVersionInfo.csv";//file generato dal codice di falessi
-    private static final double releasesPercentage = 0.02;//percentuale di classi da prendere
-    private static final String repoOpenjpaPath = "C:/Users/enrico/IdeaProjects/openjpa";
-    private static final String outputDatasetPath = "C:/Users/enrico/IdeaProjects/datasetCreator/openjpa_dataset.csv";
+        /*
+        private static final String releasesFilePath = "C:/Users/enrico/IdeaProjects/datasetCreator/OPENJPAVersionInfo.csv";//file generato dal codice di falessi
+        private static final double releasesPercentage = 0.02;//percentuale di classi da prendere
+        private static final String repoOpenjpaPath = "C:/Users/enrico/IdeaProjects/openjpa";
+        private static final String outputDatasetPath = "C:/Users/enrico/IdeaProjects/datasetCreator/openjpa_dataset.csv";
+         */
+
     public static void main(String[] args) throws IOException{
 
+        //recupero le release dal file generato dal codice del falessi
         List<ReleaseInfo> releases = csvReader.getReleasesInfo(releasesFilePath, releasesPercentage);
+
+        //apro la repo di OpenJPA
         Git git = GitUtils.openRepository(repoOpenjpaPath);
+
+        //lista che contiene tutte le classi con relative metriche
         List<ClassMetrics> datasetFinale = new ArrayList<>();
 
         for (ReleaseInfo rel : releases) {
             System.out.println("--- Analisi Release: " + rel.getReleaseName() + " (" + rel.getDate() + ") ---");
 
-            //faccio il checkout della release i-esima
+            //faccio il checkout della release i-esima e prendo il primo commit antecedente alla data della release
             GitUtils.checkoutToDate(git, rel.getDate());
 
-            //stampiamo i risultati per questa release
-            List<String> nomiClassi = getJavaClassesName(repoOpenjpaPath);
-            System.out.println("   [INFO] Totale classi: " + nomiClassi.size());
+            //recupero il path di tutte le classi nella release i-esima che terminano con .java esclusi i test
+            List<String> classPaths = getJavaClassesName(repoOpenjpaPath);
+            System.out.println("   [INFO] Totale classi: " + classPaths.size());
 
-            for (String nomeClasse : nomiClassi) {
+            for (String percorsoClasse : classPaths) {
 
-                // 1. Crea l'istanza usando il costruttore (Nome Classe, ID Release)
-                ClassMetrics metrics = new ClassMetrics(nomeClasse, rel.getReleaseID());//release ID + nome
-                metrics.setLOC(countLoc(repoOpenjpaPath, nomeClasse));//LOC
-                metrics.setNRtotal(NRtotal(git, repoOpenjpaPath, rel.getDate()));//NRtotal
-
-                // 2. Salva l'istanza nella lista globale
+                //creo l'istanza usando il costruttore (percorso classe, ID Release)
+                ClassMetrics metrics = new ClassMetrics(percorsoClasse, rel.getReleaseID());//release ID + percorso file
+                metrics.setLOC(countLoc(repoOpenjpaPath, percorsoClasse));//LOC
+                metrics.setNRtotal(NR.TotalNR(git,percorsoClasse));
                 datasetFinale.add(metrics);
             }
 
-            System.out.println();
+            //System.out.println();
 
         }
-
-        //ConsoleCsvPrinter.printDataset(datasetFinale);
 
         // 4. RITORNO AL MASTER
         System.out.println("Ripristino repository al branch master...");

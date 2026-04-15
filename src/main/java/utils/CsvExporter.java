@@ -10,29 +10,24 @@ public class CsvExporter {
 
     private static final String HEADER = "ReleaseID,ClassName,LOC,NRtotal,Buggy";
 
-    /**
-     * Esporta una lista di ClassMetrics in un file CSV.
-     * @param metricsList La lista dei dati da scrivere.
-     * @param outputDatasetPath Il percorso completo del file (es. "C:/.../dataset.csv").
-     */
-    public static void exportToCsv(List<ClassMetrics> metricsList, String outputDatasetPath) {
+    public static void exportToCsv(List<ClassMetrics> classMetrics, String outputDatasetPath) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputDatasetPath))) {
 
-            // 1. Scrittura Header
+            //header
             writer.write(HEADER);
             writer.newLine();
 
-            // 2. Scrittura Righe
-            for (ClassMetrics metrics : metricsList) {
+            //righe
+            for (ClassMetrics metrics : classMetrics) {
                 writer.write(metrics.toCsvRow());
                 writer.newLine();
             }
 
             System.out.println("Dataset creato con successo: " + outputDatasetPath);
-            System.out.println("Totale righe: " + metricsList.size());
+            System.out.println("Totale righe: " + classMetrics.size());
 
         } catch (IOException e) {
-            System.err.println("Errore critico durante la scrittura del CSV: " + e.getMessage());
+            System.err.println("Errore durante la scrittura del CSV: " + e.getMessage());
         }
     }
 }
