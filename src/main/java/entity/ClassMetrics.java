@@ -7,6 +7,7 @@ public class ClassMetrics {
 
     private int LOC;
     private int NRtotal;
+    private int NRpartial;
 
     private String buggy = "no"; // Valore di default
 
@@ -22,6 +23,8 @@ public class ClassMetrics {
     public void setNRtotal(int NRtotal) {
         this.NRtotal = NRtotal;
     }
+
+    public void setNRpartial(int NRpartial){this.NRpartial = NRpartial; }
 
     public String getClassName(){
         return this.className;
@@ -41,11 +44,12 @@ public class ClassMetrics {
 
     public String toCsvRow() {
         // %d si usa per gli interi (LOC, NRtotal)
-        return String.format("%s,%s,%d,%d,%s",
+        return String.format("%s,%s,%d,%d,%d,%s",
                 releaseID,
                 className,
                 LOC,
                 NRtotal,
+                NRpartial,
                 buggy
         );
     }

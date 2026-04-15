@@ -19,9 +19,11 @@ import static metrics.CountLOC.countLoc;
 public class Main {
 
     private static final String releasesFilePath = "C:/Users/simor/Desktop/progetto falessi/OPENJPAVersionInfo.csv";//file generato dal codice di falessi
-    private static final double releasesPercentage = 0.03;//percentuale di classi da prendere
+    private static final double releasesPercentage = 0.34;//percentuale di classi da prendere
     private static final String repoOpenjpaPath = "C:/Users/simor/Desktop/openjpa";
     private static final String outputDatasetPath = "C:/Users/simor/Desktop/datasetCreator/openjpa_dataset.csv";
+
+    private static String PREVIOUS_RELEASE_DATE = null;
 
         /*
         private static final String releasesFilePath = "C:/Users/enrico/IdeaProjects/datasetCreator/OPENJPAVersionInfo.csv";//file generato dal codice di falessi
@@ -41,6 +43,7 @@ public class Main {
         //lista che contiene tutte le classi con relative metriche
         List<ClassMetrics> datasetFinale = new ArrayList<>();
 
+
         for (ReleaseInfo rel : releases) {
             System.out.println("--- Analisi Release: " + rel.getReleaseName() + " (" + rel.getDate() + ") ---");
 
@@ -53,15 +56,16 @@ public class Main {
 
             for (String percorsoClasse : classPaths) {
 
-                //creo l'istanza usando il costruttore (percorso classe, ID Release)
                 ClassMetrics metrics = new ClassMetrics(percorsoClasse, rel.getReleaseID());//release ID + percorso file
                 metrics.setLOC(countLoc(repoOpenjpaPath, percorsoClasse));//LOC
-                metrics.setNRtotal(NR.TotalNR(git,percorsoClasse));
+                metrics.setNRtotal(NR.TotalNR(git,percorsoClasse));//NRtotal
+                metrics.setNRpartial(NR.PartialNR(git,percorsoClasse,PREVIOUS_RELEASE_DATE));//NRpartial
+
                 datasetFinale.add(metrics);
             }
 
-            //System.out.println();
-
+            PREVIOUS_RELEASE_DATE = rel.getDate();
+            System.out.println();
         }
 
         // 4. RITORNO AL MASTER

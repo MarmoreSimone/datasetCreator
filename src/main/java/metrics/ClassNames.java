@@ -26,7 +26,7 @@ public class ClassNames {
         }
     }
 
-
+    //USATO PER WINDOWS
     public static String convertPath(String filePath) {
 
         String convertedPath = filePath.replace("\\", "/");
