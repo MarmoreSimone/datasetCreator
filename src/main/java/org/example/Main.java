@@ -3,12 +3,15 @@ package org.example;
 import entity.ClassMetrics;
 import entity.ReleaseInfo;
 import metrics.NR;
+import metrics.Nfix;
 import org.eclipse.jgit.api.Git;
 import utils.CsvExporter;
 import utils.GitUtils;
+import utils.Miscellaneous;
 import utils.csvReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -19,7 +22,7 @@ import static metrics.CountLOC.countLoc;
 public class Main {
 
     private static final String releasesFilePath = "C:/Users/simor/Desktop/progetto falessi/OPENJPAVersionInfo.csv";//file generato dal codice di falessi
-    private static final double releasesPercentage = 0.34;//percentuale di classi da prendere
+    private static final double releasesPercentage = 0.08;//percentuale di classi da prendere
     private static final String repoOpenjpaPath = "C:/Users/simor/Desktop/openjpa";
     private static final String outputDatasetPath = "C:/Users/simor/Desktop/datasetCreator/openjpa_dataset.csv";
 
@@ -36,6 +39,9 @@ public class Main {
 
         //recupero le release dal file generato dal codice del falessi
         List<ReleaseInfo> releases = csvReader.getReleasesInfo(releasesFilePath, releasesPercentage);
+
+        //recupero gli id dei ticket buggy
+        HashSet<String> buggyTicketsID = Miscellaneous.retrieveTicketsID();
 
         //apro la repo di OpenJPA
         Git git = GitUtils.openRepository(repoOpenjpaPath);
@@ -60,6 +66,8 @@ public class Main {
                 metrics.setLOC(countLoc(repoOpenjpaPath, percorsoClasse));//LOC
                 metrics.setNRtotal(NR.TotalNR(git,percorsoClasse));//NRtotal
                 metrics.setNRpartial(NR.PartialNR(git,percorsoClasse,PREVIOUS_RELEASE_DATE));//NRpartial
+                metrics.setNfixTotal(Nfix.nFixTotal(percorsoClasse,buggyTicketsID,git));//NfixTotal
+                metrics.setNfixPartial(Nfix.nFixPartial(percorsoClasse,buggyTicketsID,git,PREVIOUS_RELEASE_DATE));
 
                 datasetFinale.add(metrics);
             }

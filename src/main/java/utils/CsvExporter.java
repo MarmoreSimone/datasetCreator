@@ -8,7 +8,7 @@ import java.util.List;
 
 public class CsvExporter {
 
-    private static final String HEADER = "ReleaseID,ClassName,LOC,NRtotal,NRpartial,Buggy";
+    private static final String HEADER = "ReleaseID,ClassName,LOC,NRtotal,NRpartial,NfixTotal,NfixPartial,Buggy";
 
     public static void exportToCsv(List<ClassMetrics> classMetrics, String outputDatasetPath) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputDatasetPath))) {
@@ -23,8 +23,7 @@ public class CsvExporter {
                 writer.newLine();
             }
 
-            System.out.println("Dataset creato con successo: " + outputDatasetPath);
-            System.out.println("Totale righe: " + classMetrics.size());
+            System.out.println("righe dataset: " + classMetrics.size());
 
         } catch (IOException e) {
             System.err.println("Errore durante la scrittura del CSV: " + e.getMessage());

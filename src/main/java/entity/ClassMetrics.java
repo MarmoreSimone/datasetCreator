@@ -8,6 +8,8 @@ public class ClassMetrics {
     private int LOC;
     private int NRtotal;
     private int NRpartial;
+    private int NfixTotal;
+    private int NfixPartial;
 
     private String buggy = "no"; // Valore di default
 
@@ -25,6 +27,15 @@ public class ClassMetrics {
     }
 
     public void setNRpartial(int NRpartial){this.NRpartial = NRpartial; }
+
+    public void setNfixTotal(int Nfix){
+        this.NfixTotal = Nfix;
+    }
+
+    public void setNfixPartial(int Nfix){
+        this.NfixPartial= Nfix;
+    }
+
 
     public String getClassName(){
         return this.className;
@@ -44,12 +55,14 @@ public class ClassMetrics {
 
     public String toCsvRow() {
         // %d si usa per gli interi (LOC, NRtotal)
-        return String.format("%s,%s,%d,%d,%d,%s",
+        return String.format("%s,%s,%d,%d,%d,%d,%d,%s",
                 releaseID,
                 className,
                 LOC,
                 NRtotal,
                 NRpartial,
+                NfixTotal,
+                NfixPartial,
                 buggy
         );
     }

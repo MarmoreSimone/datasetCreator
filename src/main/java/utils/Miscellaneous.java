@@ -1,8 +1,13 @@
 package utils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
+import java.util.Scanner;
+import java.util.Set;
 
 public class Miscellaneous {
 
@@ -18,4 +23,29 @@ public class Miscellaneous {
             throw new RuntimeException("errore critico: formato data non valido '" + dateString + "'. USA: yyyy-MM-dd", e);
         }
     }
-}
+
+    public static HashSet<String> retrieveTicketsID(){
+
+        HashSet<String> ticketList = new HashSet<>();
+
+        File file = new File("buggyTicket.txt");
+
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                String riga = scanner.nextLine().trim();
+                if (!riga.isEmpty()) {
+                    ticketList.add(riga);
+                }
+            }
+
+        } catch (FileNotFoundException e) {
+            System.err.println("Errore: File non trovato!");
+        }
+
+        return ticketList;
+    }
+
+    }
+
+
+

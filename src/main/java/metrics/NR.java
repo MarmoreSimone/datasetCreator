@@ -35,6 +35,7 @@ public class NR {
     public static int PartialNR(Git git, String filePath, String previousReleaseDate) {
         int nr = 0;
 
+        //caso prima release
         if (previousReleaseDate == null) {
             return TotalNR(git, filePath);
         }
@@ -48,7 +49,7 @@ public class NR {
                     .setRevFilter(CommitTimeRevFilter.after(utils.Miscellaneous.toDate(previousReleaseDate)))//filtro solo per i commit di questa release
                     .call();
 
-            for (RevCommit ignored : commits) nr++;
+            for (RevCommit temp : commits) nr++;
 
         } catch (Exception e) {
             System.err.println("Errore durante il calcolo dell'NR per " + filePath + ": " + e.getMessage());
