@@ -21,19 +21,12 @@ import static metrics.CountLOC.countLoc;
 
 public class Main {
 
-    private static final String releasesFilePath = "C:/Users/simor/Desktop/progetto falessi/OPENJPAVersionInfo.csv";//file generato dal codice di falessi
-    private static final double releasesPercentage = 0.08;//percentuale di classi da prendere
-    private static final String repoOpenjpaPath = "C:/Users/simor/Desktop/openjpa";
-    private static final String outputDatasetPath = "C:/Users/simor/Desktop/datasetCreator/openjpa_dataset.csv";
+    private static final String releasesFilePath = "OPENJPAVersionInfo.csv";//file generato dal codice di falessi
+    private static final double releasesPercentage = 0.04;//percentuale di classi da prendere
+    private static final String repoOpenjpaPath = "openjpa";
+    private static final String outputDatasetPath = "openjpa_dataset.csv";
 
     private static String PREVIOUS_RELEASE_DATE = null;
-
-        /*
-        private static final String releasesFilePath = "C:/Users/enrico/IdeaProjects/datasetCreator/OPENJPAVersionInfo.csv";//file generato dal codice di falessi
-        private static final double releasesPercentage = 0.02;//percentuale di classi da prendere
-        private static final String repoOpenjpaPath = "C:/Users/enrico/IdeaProjects/openjpa";
-        private static final String outputDatasetPath = "C:/Users/enrico/IdeaProjects/datasetCreator/openjpa_dataset.csv";
-         */
 
     public static void main(String[] args) throws IOException{
 
