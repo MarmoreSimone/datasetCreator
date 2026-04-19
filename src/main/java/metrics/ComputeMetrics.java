@@ -66,12 +66,12 @@ public class ComputeMetrics {
 
             }
 
-            metrics.setNRtotal(nr);
-            metrics.setNRpartial(nrPartial);
-            metrics.setNfixTotal(nFix);
-            metrics.setNfixPartial(nFixPartial);
-            metrics.setNauthTotal(nAuthTotal.size());
-            metrics.setNauthPartial(nAuthPartial.size());
+            metrics.setNrTotal(nr);
+            metrics.setNrPartial(nrPartial);
+            metrics.setnFixTotal(nFix);
+            metrics.setnFixPartial(nFixPartial);
+            metrics.setnAuthTotal(nAuthTotal.size());
+            metrics.setnAuthPartial(nAuthPartial.size());
 
         } catch (Exception e) {
             System.err.println("Errore " + metrics.getClassName() + ": " + e.getMessage());

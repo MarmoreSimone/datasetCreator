@@ -5,13 +5,13 @@ public class ClassMetrics {
     private String className;
     private String releaseID;
 
-    private int LOC;
-    private int NRtotal;
-    private int NRpartial;
-    private int NfixTotal;
-    private int NfixPartial;
-    private int NauthTotal;
-    private int NauthPartial;
+    private int loc;
+    private int nrTotal;
+    private int nrPartial;
+    private int nFixTotal;
+    private int nFixPartial;
+    private int nAuthTotal;
+    private int nAuthPartial;
 
     private String buggy = "no"; // Valore di default
 
@@ -20,27 +20,27 @@ public class ClassMetrics {
         this.releaseID = releaseID;
     }
 
-    public void setLOC(int LOC) {
-        this.LOC = LOC;
+    public void setLoc(int loc) {
+        this.loc = loc;
     }
 
-    public void setNRtotal(int NRtotal) {
-        this.NRtotal = NRtotal;
+    public void setNrTotal(int nrTotal) {
+        this.nrTotal = nrTotal;
     }
 
-    public void setNRpartial(int NRpartial){this.NRpartial = NRpartial; }
+    public void setNrPartial(int nrPartial){this.nrPartial = nrPartial; }
 
-    public void setNfixTotal(int Nfix){
-        this.NfixTotal = Nfix;
+    public void setnFixTotal(int Nfix){
+        this.nFixTotal = Nfix;
     }
 
-    public void setNfixPartial(int Nfix){
-        this.NfixPartial= Nfix;
+    public void setnFixPartial(int Nfix){
+        this.nFixPartial = Nfix;
     }
 
-    public void setNauthTotal(int Nauth){ this.NauthTotal = Nauth; }
+    public void setnAuthTotal(int Nauth){ this.nAuthTotal = Nauth; }
 
-    public void setNauthPartial(int Nauth){ this.NauthPartial = Nauth; }
+    public void setnAuthPartial(int Nauth){ this.nAuthPartial = Nauth; }
 
     public String getClassName(){
         return this.className;
@@ -50,32 +50,32 @@ public class ClassMetrics {
         return releaseID;
     }
 
-    public int getLOC(){
-        return LOC;
+    public int getLoc(){
+        return loc;
     }
 
-    public int getNRtotal() {
-        return this.NRtotal;
+    public int getNrTotal() {
+        return this.nrTotal;
     }
 
-    public int getNRpartial() {
-        return NRpartial;
+    public int getNrPartial() {
+        return nrPartial;
     }
 
-    public int getNfixTotal() {
-        return NfixTotal;
+    public int getnFixTotal() {
+        return nFixTotal;
     }
 
-    public int getNfixPartial() {
-        return NfixPartial;
+    public int getnFixPartial() {
+        return nFixPartial;
     }
 
-    public int getNauthTotal() {
-        return NauthTotal;
+    public int getnAuthTotal() {
+        return nAuthTotal;
     }
 
-    public int getNauthPartial() {
-        return NauthPartial;
+    public int getnAuthPartial() {
+        return nAuthPartial;
     }
 
     public String toCsvRow() {
@@ -83,13 +83,13 @@ public class ClassMetrics {
         return String.format("%s,%s,%d,%d,%d,%d,%d,%d,%d,%s",
                 releaseID,
                 className,
-                LOC,
-                NRtotal,
-                NRpartial,
-                NfixTotal,
-                NfixPartial,
-                NauthTotal,
-                NauthPartial,
+                loc,
+                nrTotal,
+                nrPartial,
+                nFixTotal,
+                nFixPartial,
+                nAuthTotal,
+                nAuthPartial,
                 buggy
         );
     }

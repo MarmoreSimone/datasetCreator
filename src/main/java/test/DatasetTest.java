@@ -23,27 +23,27 @@ public class DatasetTest {
                 // --- A. TEST COERENZA INTERNA (All'interno della stessa riga) ---
 
                 // 1. Relazione Commit-Autori: Se c'è attività, deve esserci un responsabile
-                if (current.getNRpartial() > 0 && current.getNauthPartial() == 0) {
-                    System.err.println("❌ ERR [Auth]: " + name + " [Rel " + relId + "] ha " + current.getNRpartial() + " commit ma 0 autori parziali.");
+                if (current.getNrPartial() > 0 && current.getnAuthPartial() == 0) {
+                    System.err.println("❌ ERR [Auth]: " + name + " [Rel " + relId + "] ha " + current.getNrPartial() + " commit ma 0 autori parziali.");
                     errors++;
                 }
 
                 // 2. Vincolo Fisico: Gli autori parziali non possono mai superare i commit parziali
-                if (current.getNauthPartial() > current.getNRpartial()) {
-                    System.err.println("❌ ERR [Limit]: " + name + " [Rel " + relId + "] ha più autori (" + current.getNauthPartial() + ") che commit (" + current.getNRpartial() + ").");
+                if (current.getnAuthPartial() > current.getNrPartial()) {
+                    System.err.println("❌ ERR [Limit]: " + name + " [Rel " + relId + "] ha più autori (" + current.getnAuthPartial() + ") che commit (" + current.getNrPartial() + ").");
                     errors++;
                 }
 
                 // 3. Vincolo Storico: I valori parziali (della release) devono essere <= ai totali (storia intera)
-                if (current.getNRpartial() > current.getNRtotal() ||
-                        current.getNfixPartial() > current.getNfixTotal() ||
-                        current.getNauthPartial() > current.getNauthTotal()) {
+                if (current.getNrPartial() > current.getNrTotal() ||
+                        current.getnFixPartial() > current.getnFixTotal() ||
+                        current.getnAuthPartial() > current.getnAuthTotal()) {
                     System.err.println("❌ ERR [History]: Valori parziali superano i totali per " + name);
                     errors++;
                 }
 
                 // 4. Test Esistenza: Se il file è nel dataset, dovrebbe avere del codice
-                if (current.getLOC() <= 0) {
+                if (current.getLoc() <= 0) {
                     System.err.println("⚠️ WARN [LOC]: " + name + " ha LOC=0 nella Rel " + relId + ". (Controllare se git.clean() ha rimosso un file tracciato)");
                     warnings++;
                 }
@@ -54,17 +54,17 @@ public class DatasetTest {
                     ClassMetrics prev = lastSeenRelease.get(name);
 
                     // 5. Monotonia: NR, NFix e NAuth TOTALI non possono mai diminuire nel tempo
-                    if (current.getNRtotal() < prev.getNRtotal()) {
+                    if (current.getNrTotal() < prev.getNrTotal()) {
                         System.err.println("❌ ERR [Monotonia NR]: Storia diminuita per " + name + " (Rel " + prev.getReleaseID() + " -> " + relId + ")");
                         errors++;
                     }
-                    if (current.getNauthTotal() < prev.getNauthTotal()) {
+                    if (current.getnAuthTotal() < prev.getnAuthTotal()) {
                         System.err.println("❌ ERR [Monotonia Nauth]: Persi autori storici per " + name);
                         errors++;
                     }
 
                     // 6. Verifica Matematica: Il totale attuale deve essere ALMENO la somma del vecchio totale + parziale nuovo
-                    if (current.getNRtotal() < (prev.getNRtotal() + current.getNRpartial())) {
+                    if (current.getNrTotal() < (prev.getNrTotal() + current.getNrPartial())) {
                         System.err.println("❌ ERR [Math]: NRtotal incoerente per " + name + ". La somma dei parziali non corrisponde all'incremento del totale.");
                         errors++;
                     }
