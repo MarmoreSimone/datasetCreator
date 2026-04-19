@@ -23,7 +23,7 @@ public class Main {
 
     private static final String releasesFilePath = "OPENJPAVersionInfo.csv";//file generato dal codice di falessi
     private static final double releasesPercentage = 0.04;//percentuale di classi da prendere
-    private static final String repoOpenjpaPath = "openjpa";
+    private static final String repoOpenjpaPath = "C:/Users/simor/Desktop/openjpa";
     private static final String outputDatasetPath = "openjpa_dataset.csv";
 
     private static String PREVIOUS_RELEASE_DATE = null;
