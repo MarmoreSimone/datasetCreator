@@ -8,7 +8,7 @@ import java.util.List;
 
 public class CsvExporter {
 
-    private static final String HEADER = "ReleaseID,ClassName,LOC,NRtotal,NRpartial,NfixTotal,NfixPartial,Buggy";
+    private static final String HEADER = "ReleaseID,ClassName,LOC,NRtotal,NRpartial,NfixTotal,NfixPartial,NauthTotasl,NauthPartial,Buggy";
 
     public static void exportToCsv(List<ClassMetrics> classMetrics, String outputDatasetPath) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputDatasetPath))) {

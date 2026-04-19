@@ -23,11 +23,14 @@ public class ComputeMetrics {
         int nFix = 0;
         int nFixPartial = 0;
 
+        //uso un HashSet cosi da non dover gestire i duplicati
+        HashSet<String> nAuthTotal = new HashSet<>();
+        HashSet<String> nAuthPartial = new HashSet<>();
+
         try {
 
             //head é l'identificativo del commit in cui mi trovo
             ObjectId head = git.getRepository().resolve("HEAD");
-
 
             Iterable<RevCommit> commits = git.log()//prendo tutti i commit relativi a quel file
                     .add(head)//parte da qui e va indietro
@@ -46,6 +49,7 @@ public class ComputeMetrics {
                 if(isPartial) nrPartial++;
 
                 //2) parte relativa a Nfix
+                //conta il numero di volte che una classe é stata toccata da un commit relativo a un ticket di tipo BUG, total é relativo a tutta la vita della classe
                 String message = commit.getFullMessage();//recupero il commento del commit
                 if (utils.metricsUtils.isCommitAFix(message, buggyTicketList)) {//controllo se nel messaggio c'é il riferimento a un ticket buggy
                     //System.out.println(message+filePath);
@@ -53,6 +57,12 @@ public class ComputeMetrics {
                     if(isPartial) nFixPartial++;
                 }
 
+                //3) parte relativa a Nauth
+                //numero di autori che hanno toccato una classe, ovviamente non si contano i duplicati, NauthTotal=il numero totale di autori diversi che hanno toccato quella classe fino a quel momento
+                //NauthPartial=numero di autori diversi che in quella release hanno toccato la classe
+                String authorEmail = commit.getAuthorIdent().getEmailAddress();
+                nAuthTotal.add(authorEmail);
+                if (isPartial) nAuthPartial.add(authorEmail);
 
             }
 
@@ -60,6 +70,8 @@ public class ComputeMetrics {
             metrics.setNRpartial(nrPartial);
             metrics.setNfixTotal(nFix);
             metrics.setNfixPartial(nFixPartial);
+            metrics.setNauthTotal(nAuthTotal.size());
+            metrics.setNauthPartial(nAuthPartial.size());
 
         } catch (Exception e) {
             System.err.println("Errore " + metrics.getClassName() + ": " + e.getMessage());
