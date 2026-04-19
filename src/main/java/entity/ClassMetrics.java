@@ -30,17 +30,17 @@ public class ClassMetrics {
 
     public void setNrPartial(int nrPartial){this.nrPartial = nrPartial; }
 
-    public void setnFixTotal(int Nfix){
-        this.nFixTotal = Nfix;
+    public void setnFixTotal(int nfix){
+        this.nFixTotal = nfix;
     }
 
-    public void setnFixPartial(int Nfix){
-        this.nFixPartial = Nfix;
+    public void setnFixPartial(int nfix){
+        this.nFixPartial = nfix;
     }
 
-    public void setnAuthTotal(int Nauth){ this.nAuthTotal = Nauth; }
+    public void setnAuthTotal(int nauth){ this.nAuthTotal = nauth; }
 
-    public void setnAuthPartial(int Nauth){ this.nAuthPartial = Nauth; }
+    public void setnAuthPartial(int nauth){ this.nAuthPartial = nauth; }
 
     public String getClassName(){
         return this.className;

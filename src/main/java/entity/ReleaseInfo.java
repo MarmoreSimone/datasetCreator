@@ -1,9 +1,5 @@
 package entity;
 
-import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
 public class ReleaseInfo {
     private String releaseID;//index
     private String releaseName;//version name
