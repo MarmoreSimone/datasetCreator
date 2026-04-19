@@ -23,7 +23,7 @@ import static metrics.CountLOC.countLoc;
 public class Main {
 
     private static final String releasesFilePath = "OPENJPAVersionInfo.csv";//file generato dal codice di falessi
-    private static final double releasesPercentage = 0.04;//percentuale di classi da prendere
+    private static final double releasesPercentage = 0.3;//percentuale di classi da prendere
     private static final String repoOpenjpaPath = "C:/Users/simor/Desktop/openjpa";
     //private static final String repoOpenjpaPath = "C:/Users/enrico/IdeaProjects/openjpa";
     private static final String outputDatasetPath = "openjpa_dataset.csv";
@@ -65,8 +65,7 @@ public class Main {
                 metrics.setNfixTotal(Nfix.nFixTotal(percorsoClasse,buggyTicketsID,git));//NfixTotal
                 metrics.setNfixPartial(Nfix.nFixPartial(percorsoClasse,buggyTicketsID,git,PREVIOUS_RELEASE_DATE));
                 */
-                ComputeMetrics.setMetricsTotal(metrics,git,buggyTicketsID);
-                ComputeMetrics.setMetricsPartial(metrics,git,buggyTicketsID,PREVIOUS_RELEASE_DATE);
+                ComputeMetrics.setMetrics(metrics,git,buggyTicketsID,PREVIOUS_RELEASE_DATE);
 
                 datasetFinale.add(metrics);
             }
@@ -75,7 +74,7 @@ public class Main {
             System.out.println();
         }
 
-        // 4. RITORNO AL MASTER
+        //RITORNO AL MASTER
         System.out.println("Ripristino repository al branch master...");
         try {
             git.reset().setMode(org.eclipse.jgit.api.ResetCommand.ResetType.HARD).setRef("master").call();

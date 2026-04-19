@@ -4,18 +4,24 @@ import entity.ClassMetrics;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.filter.CommitTimeRevFilter;
 
 import java.util.HashSet;
 
-import static metrics.Nfix.nFixTotal;
-
 public class ComputeMetrics {
 
-    public static void setMetricsTotal(ClassMetrics metrics, Git git, HashSet<String> buggyTicketList){
+    public static void setMetrics(ClassMetrics metrics, Git git, HashSet<String> buggyTicketList, String previousReleaseDate){
+
+        long previousDateTime = 0;
+        if (previousReleaseDate != null) {
+            previousDateTime = utils.Miscellaneous.toDate(previousReleaseDate).getTime();//praticamente faccio String -> Date -> Long
+        }
+
+        boolean isPartial;
 
         int nr = 0;
+        int nrPartial = 0;
         int nFix = 0;
+        int nFixPartial = 0;
 
         try {
 
@@ -30,73 +36,35 @@ public class ComputeMetrics {
 
             for (RevCommit commit : commits){
 
+                long commitDate = commit.getCommitTime() * 1000L;
+                if(commitDate > previousDateTime) isPartial = true;
+                else isPartial = false;
+
                 //1) parte relativa a NR
                 //conta il numero di volte che una classe é stata toccata da un commit relativo a un ticket di tipo BUG, total é relativo a tutta la vita della classe
                 nr++;
+                if(isPartial) nrPartial++;
 
                 //2) parte relativa a Nfix
                 String message = commit.getFullMessage();//recupero il commento del commit
                 if (utils.metricsUtils.isCommitAFix(message, buggyTicketList)) {//controllo se nel messaggio c'é il riferimento a un ticket buggy
                     //System.out.println(message+filePath);
                     nFix++;
+                    if(isPartial) nFixPartial++;
                 }
 
 
             }
 
             metrics.setNRtotal(nr);
+            metrics.setNRpartial(nrPartial);
             metrics.setNfixTotal(nFix);
+            metrics.setNfixPartial(nFixPartial);
 
         } catch (Exception e) {
             System.err.println("Errore " + metrics.getClassName() + ": " + e.getMessage());
         }
 
     }
-
-    public static void setMetricsPartial(ClassMetrics metrics, Git git, HashSet<String> buggyTicketList, String previousReleaseDate){
-
-        int nr = 0;
-        int nFix = 0;
-
-        if (previousReleaseDate == null || previousReleaseDate.isEmpty()) {
-           nFixTotal(metrics.getClassName(), buggyTicketList, git);
-           return;
-        }
-
-        try {
-
-            //head é l'identificativo del commit in cui mi trovo
-            ObjectId head = git.getRepository().resolve("HEAD");
-
-
-            Iterable<RevCommit> commits = git.log()
-                    .add(head)
-                    .addPath(metrics.getClassName())
-                    .setRevFilter(CommitTimeRevFilter.after(utils.Miscellaneous.toDate(previousReleaseDate)))//controllo sulla data per non andare oltre la release precedente
-                    .call();
-
-            for (RevCommit commit : commits){
-
-                //1) parte relativa a NR
-                //conta il numero di volte che una classe é stata toccata da un commit relativo a un ticket di tipo BUG, total é relativo a tutta la vita della classe
-                nr++;
-
-                //2) parte relativa a Nfix
-                String message = commit.getFullMessage();//recupero il commento del commit
-                if (utils.metricsUtils.isCommitAFix(message, buggyTicketList)) {//controllo se nel messaggio c'é il riferimento a un ticket buggy
-                    //System.out.println(message+filePath);
-                    nFix++;
-                }
-            }
-
-            metrics.setNRpartial(nr);
-            metrics.setNfixPartial(nFix);
-
-        } catch (Exception e) {
-            System.err.println("Errore " + metrics.getClassName() + ": " + e.getMessage());
-        }
-
-    }
-
 
 }
