@@ -37,7 +37,7 @@ public class Miscellaneous {
                 }
             }
 
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException _) {
             System.err.println("Errore: File non trovato!");
         }
 

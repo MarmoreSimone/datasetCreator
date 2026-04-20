@@ -18,10 +18,9 @@ public class CountLOC {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 
-            String line;
-            while ((line = reader.readLine()) != null) loc++;
+            while ((reader.readLine()) != null) loc++;
 
-        } catch (IOException e) {
+        } catch (IOException _) {
             System.err.println("Errore durante la lettura del file per contare le LOC: " + file.getPath());
         }
 

@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class metricsUtils {
+public class MetricsUtils {
 
     public static boolean isCommitAFix(String comment, HashSet<String> bugTickets) {
 

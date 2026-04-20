@@ -7,7 +7,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 import utils.CsvExporter;
 import utils.GitUtils;
 import utils.Miscellaneous;
-import utils.csvReader;
+import utils.CsvReader;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,17 +25,18 @@ import static test.DatasetTest.testDataset;
 public class Main {
 
     private static final String releasesFilePath = "OPENJPAVersionInfo.csv";//file generato dal codice di falessi
-    private static final double releasesPercentage = 0.34;//percentuale di classi da prendere
-    private static final String repoOpenjpaPath = "C:/Users/simor/Desktop/openjpa";
+    private static final double releasesPercentage = 0.03;//percentuale di classi da prendere
+    //private static final String repoOpenjpaPath = "C:/Users/simor/Desktop/openjpa";
+    private static final String repoOpenjpaPath = "openjpa";
     //private static final String repoOpenjpaPath = "C:/Users/enrico/IdeaProjects/openjpa";
     private static final String outputDatasetPath = "openjpa_dataset.csv";
 
-    private static String PREVIOUS_RELEASE_DATE = null;
+    private static String previousReleaseDate = null;
 
     public static void main(String[] args) throws IOException, GitAPIException {
 
         //recupero le release dal file generato dal codice del falessi
-        List<ReleaseInfo> releases = csvReader.getReleasesInfo(releasesFilePath, releasesPercentage);
+        List<ReleaseInfo> releases = CsvReader.getReleasesInfo(releasesFilePath, releasesPercentage);
 
         //recupero gli id dei ticket buggy
         HashSet<String> buggyTicketsID = Miscellaneous.retrieveTicketsID();
@@ -63,12 +64,12 @@ public class Main {
 
                 ClassMetrics metrics = new ClassMetrics(percorsoClasse, rel.getReleaseID());//release ID + percorso file
                 metrics.setLoc(countLoc(repoOpenjpaPath, percorsoClasse));//LOC
-                ComputeMetrics.setMetrics(metrics,git,buggyTicketsID,PREVIOUS_RELEASE_DATE);//tutte le altre metriche
+                ComputeMetrics.setMetrics(metrics,git,buggyTicketsID, previousReleaseDate);//tutte le altre metriche
 
                 datasetFinale.add(metrics);
             }
 
-            PREVIOUS_RELEASE_DATE = rel.getDate();
+            previousReleaseDate = rel.getDate();
             System.out.println();
         }
 

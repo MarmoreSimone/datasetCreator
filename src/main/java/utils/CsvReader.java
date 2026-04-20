@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class csvReader {
+public class CsvReader {
 
     public static List<ReleaseInfo> getReleasesInfo(String filePath, double releasePercentage) {
         // filePath: percorso dove si trova il csv generato dal codice (es. OPENJPAVersionInfo.csv)

@@ -4,6 +4,7 @@ import entity.ClassMetrics;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevCommit;
+import utils.MetricsUtils;
 
 import java.util.HashSet;
 
@@ -51,7 +52,7 @@ public class ComputeMetrics {
                 //2) parte relativa a Nfix
                 //conta il numero di volte che una classe é stata toccata da un commit relativo a un ticket di tipo BUG, total é relativo a tutta la vita della classe
                 String message = commit.getFullMessage();//recupero il commento del commit
-                if (utils.metricsUtils.isCommitAFix(message, buggyTicketList)) {//controllo se nel messaggio c'é il riferimento a un ticket buggy
+                if (MetricsUtils.isCommitAFix(message, buggyTicketList)) {//controllo se nel messaggio c'é il riferimento a un ticket buggy
                     //System.out.println(message+filePath);
                     nFix++;
                     if(isPartial) nFixPartial++;
