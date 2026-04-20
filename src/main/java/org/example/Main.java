@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 import metrics.ComputeMetrics;
@@ -39,7 +40,7 @@ public class Main {
         List<ReleaseInfo> releases = CsvReader.getReleasesInfo(releasesFilePath, releasesPercentage);
 
         //recupero gli id dei ticket buggy
-        HashSet<String> buggyTicketsID = Miscellaneous.retrieveTicketsID();
+        Set<String> buggyTicketsID = Miscellaneous.retrieveTicketsID();
 
         //apro la repo di OpenJPA
         Git git = GitUtils.openRepository(repoOpenjpaPath);

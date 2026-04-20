@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Miscellaneous {
 
@@ -23,7 +24,7 @@ public class Miscellaneous {
         }
     }
 
-    public static HashSet<String> retrieveTicketsID(){
+    public static Set<String> retrieveTicketsID(){
 
         HashSet<String> ticketList = new HashSet<>();
 

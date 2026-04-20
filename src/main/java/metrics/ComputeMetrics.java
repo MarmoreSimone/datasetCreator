@@ -7,10 +7,11 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import utils.MetricsUtils;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class ComputeMetrics {
 
-    public static void setMetrics(ClassMetrics metrics, Git git, HashSet<String> buggyTicketList, String previousReleaseDate){
+    public static void setMetrics(ClassMetrics metrics, Git git, Set<String> buggyTicketList, String previousReleaseDate){
 
         long previousDateTime = 0;
         if (previousReleaseDate != null) {
