@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 
 public class MetricsUtils {
 
+    private MetricsUtils(){}
+
     public static boolean isCommitAFix(String comment, Set<String> bugTickets) {
 
         //definisco la regex per riconoscere nel testo la presenza di una stringa del formato OPENJPA-XXXX

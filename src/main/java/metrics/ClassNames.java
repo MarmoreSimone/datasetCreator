@@ -11,6 +11,9 @@ import java.util.stream.Stream;
 //classe che recupera tutti i file che terminano con .java, escludiamo le classi di test
 public class ClassNames {
 
+    //costruttore privato per evitare di istanziare la classe
+    private ClassNames(){}
+
     public static List<String> getJavaClassesName(String repoPath) throws IOException {
         Path projectRoot = Paths.get(repoPath);
 
@@ -22,7 +25,7 @@ public class ClassNames {
                     .filter(p -> !p.toString().contains("/test/") && !p.toString().contains("\\test\\"))
                     // prendiamo il percorso dalla root del progetto in poi
                     .map(p -> convertPath(projectRoot.relativize(p).toString()))//mantengo solo la parte relativa al file del progetto
-                    .collect(Collectors.toList());
+                    .toList();
         }
     }
 

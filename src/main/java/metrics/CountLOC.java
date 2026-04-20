@@ -8,23 +8,25 @@ import java.io.IOException;
 //classe che si occupa di contare le righe di codice di ogni classe, consideriamo anche le righe vuote
 public class CountLOC {
 
-    public static int countLoc(String repoPath, String relativeFilePath) {
-        // Costruiamo il percorso completo del file
-        File file = new File(repoPath, relativeFilePath);
-        int loc = 0;
+    private CountLOC() {
+        /* This utility class should not be instantiated */
+    }
 
-        // Se il file non esiste (magari è stato rinominato o cancellato in questa release), torniamo 0
+    public static int countLoc(String repoPath, String relativeFilePath) {
+        File file = new File(repoPath, relativeFilePath);
+
         if (!file.exists()) return 0;
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 
-            while ((reader.readLine()) != null) loc++;
+            // lines() crea uno stream di righe, count() le conta.
+            // Poiché count() restituisce un 'long', facciamo un cast a (int)
+            return (int) reader.lines().count();
 
         } catch (IOException _) {
             System.err.println("Errore durante la lettura del file per contare le LOC: " + file.getPath());
+            return 0; // Se c'è un errore, restituiamo 0
         }
-
-        return loc;
     }
 
 }

@@ -11,7 +11,6 @@ import utils.CsvReader;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -27,14 +26,12 @@ public class Main {
 
     private static final String releasesFilePath = "OPENJPAVersionInfo.csv";//file generato dal codice di falessi
     private static final double releasesPercentage = 0.03;//percentuale di classi da prendere
-    //private static final String repoOpenjpaPath = "C:/Users/simor/Desktop/openjpa";
     private static final String repoOpenjpaPath = "openjpa";
-    //private static final String repoOpenjpaPath = "C:/Users/enrico/IdeaProjects/openjpa";
     private static final String outputDatasetPath = "openjpa_dataset.csv";
 
     private static String previousReleaseDate = null;
 
-    public static void main(String[] args) throws IOException, GitAPIException {
+    public static void main() throws IOException, GitAPIException {
 
         //recupero le release dal file generato dal codice del falessi
         List<ReleaseInfo> releases = CsvReader.getReleasesInfo(releasesFilePath, releasesPercentage);

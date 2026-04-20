@@ -11,6 +11,10 @@ import java.util.Set;
 
 public class ComputeMetrics {
 
+    private ComputeMetrics() {
+        /* This utility class should not be instantiated */
+    }
+
     public static void setMetrics(ClassMetrics metrics, Git git, Set<String> buggyTicketList, String previousReleaseDate){
 
         long previousDateTime = 0;
@@ -54,7 +58,6 @@ public class ComputeMetrics {
                 //conta il numero di volte che una classe é stata toccata da un commit relativo a un ticket di tipo BUG, total é relativo a tutta la vita della classe
                 String message = commit.getFullMessage();//recupero il commento del commit
                 if (MetricsUtils.isCommitAFix(message, buggyTicketList)) {//controllo se nel messaggio c'é il riferimento a un ticket buggy
-                    //System.out.println(message+filePath);
                     nFix++;
                     if(isPartial) nFixPartial++;
                 }

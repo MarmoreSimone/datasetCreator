@@ -8,6 +8,8 @@ import java.util.Map;
 
 public class DatasetTest {
 
+        private DatasetTest(){}
+
         public static void testDataset(List<ClassMetrics> dataset) {
             int errors = 0;
             int warnings = 0;

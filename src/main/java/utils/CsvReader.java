@@ -10,6 +10,8 @@ import java.util.List;
 
 public class CsvReader {
 
+    private CsvReader(){}
+
     public static List<ReleaseInfo> getReleasesInfo(String filePath, double releasePercentage) {
         // filePath: percorso dove si trova il csv generato dal codice (es. OPENJPAVersionInfo.csv)
         // releasePercentage: percentuale di release su cui vogliamo fare il dataset (es. 0.34)
@@ -18,7 +20,7 @@ public class CsvReader {
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
-            br.readLine(); // Salta l'header
+            var _ = br.readLine(); // Salta l'header, impiccio con var_ per smell sonarcloud
 
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(";");

@@ -11,6 +11,8 @@ import java.util.Set;
 
 public class Miscellaneous {
 
+    private Miscellaneous(){}
+
     public static Date toDate(String dateString) {
         if (dateString == null || dateString.isEmpty()) {
             return null;
@@ -20,7 +22,7 @@ public class Miscellaneous {
         try {
             return formatter.parse(dateString);
         } catch (ParseException e) {
-            throw new RuntimeException("errore critico: formato data non valido '" + dateString + "'. USA: yyyy-MM-dd", e);
+            throw new IllegalArgumentException("errore critico: formato data non valido '" + dateString + "'. USA: yyyy-MM-dd", e);
         }
     }
 

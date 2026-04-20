@@ -13,6 +13,8 @@ import java.util.stream.StreamSupport;
 
 public class GitUtils {
 
+    private GitUtils(){}
+
     //Inizializza il repository Git
     public static Git openRepository(String repoPath) throws IOException {
         FileRepositoryBuilder builder = new FileRepositoryBuilder();
