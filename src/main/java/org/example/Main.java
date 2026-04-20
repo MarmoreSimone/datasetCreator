@@ -24,23 +24,23 @@ import static test.DatasetTest.testDataset;
 
 public class Main {
 
-    private static final String releasesFilePath = "OPENJPAVersionInfo.csv";//file generato dal codice di falessi
-    private static final double releasesPercentage = 0.03;//percentuale di classi da prendere
-    private static final String repoOpenjpaPath = "openjpa";
-    private static final String outputDatasetPath = "openjpa_dataset.csv";
+    private static final String RELEASES_FILE_PATH = "OPENJPAVersionInfo.csv";//file generato dal codice di falessi
+    private static final double RELEASES_PERCENTAGE = 0.03;//percentuale di classi da prendere
+    private static final String REPO_OPENJPA_PATH = "openjpa";
+    private static final String OUTPUT_DATASET_PATH = "openjpa_dataset.csv";
 
     private static String previousReleaseDate = null;
 
     public static void main() throws IOException, GitAPIException {
 
         //recupero le release dal file generato dal codice del falessi
-        List<ReleaseInfo> releases = CsvReader.getReleasesInfo(releasesFilePath, releasesPercentage);
+        List<ReleaseInfo> releases = CsvReader.getReleasesInfo(RELEASES_FILE_PATH, RELEASES_PERCENTAGE);
 
         //recupero gli id dei ticket buggy
         Set<String> buggyTicketsID = Miscellaneous.retrieveTicketsID();
 
         //apro la repo di OpenJPA
-        Git git = GitUtils.openRepository(repoOpenjpaPath);
+        Git git = GitUtils.openRepository(REPO_OPENJPA_PATH);
 
         //lista che contiene tutte le classi con relative metriche
         List<ClassMetrics> datasetFinale = new ArrayList<>();
@@ -55,13 +55,13 @@ public class Main {
             git.clean().setCleanDirectories(true).setForce(true).call();
 
             //recupero il path di tutte le classi nella release i-esima che terminano con .java esclusi i test
-            List<String> classPaths = getJavaClassesName(repoOpenjpaPath);
+            List<String> classPaths = getJavaClassesName(REPO_OPENJPA_PATH);
             System.out.println("   [INFO] Totale classi: " + classPaths.size());
 
             for (String percorsoClasse : classPaths) {
 
                 ClassMetrics metrics = new ClassMetrics(percorsoClasse, rel.getReleaseID());//release ID + percorso file
-                metrics.setLoc(countLoc(repoOpenjpaPath, percorsoClasse));//LOC
+                metrics.setLoc(countLoc(REPO_OPENJPA_PATH, percorsoClasse));//LOC
                 ComputeMetrics.setMetrics(metrics,git,buggyTicketsID, previousReleaseDate);//tutte le altre metriche
 
                 datasetFinale.add(metrics);
@@ -70,50 +70,6 @@ public class Main {
             previousReleaseDate = rel.getDate();
             System.out.println();
         }
-
-        /*
-        for (ReleaseInfo rel : releases) {
-            System.out.println("--- Analisi Release: " + rel.getReleaseName() + " (" + rel.getDate() + ") ---");
-
-            GitUtils.checkoutToDate(git, rel.getDate());
-
-            try {
-                git.clean().setCleanDirectories(true).setForce(true).call();
-            } catch (Exception e) {
-                System.err.println("   [WARNING] Impossibile pulire: " + e.getMessage());
-            }
-
-            List<String> classPaths = getJavaClassesName(repoOpenjpaPath);
-            System.out.println("   [INFO] Totale classi: " + classPaths.size());
-
-            // 1. "Congelo" la data per poterla passare sicura ai thread
-            final String threadSafePreviousDate = PREVIOUS_RELEASE_DATE;
-
-            // 2. AVVIO IL PARALLELISMO
-            classPaths.parallelStream().forEach(percorsoClasse -> {
-
-                ClassMetrics metrics = new ClassMetrics(percorsoClasse, rel.getReleaseID());
-                metrics.setLOC(countLoc(repoOpenjpaPath, percorsoClasse));
-
-                // 3. Ogni thread apre il SUO "clone" di Git per non pestarsi i piedi
-                try (Git threadGit = Git.open(new File(repoOpenjpaPath))) {
-
-                    ComputeMetrics.setMetrics(metrics, threadGit, buggyTicketsID, threadSafePreviousDate);
-
-                } catch (Exception e) {
-                    System.err.println("Errore nell'apertura di Git per il thread: " + e.getMessage());
-                }
-
-                // 4. Sincronizzo l'aggiunta alla lista: entra un thread alla volta
-                synchronized (datasetFinale) {
-                    datasetFinale.add(metrics);
-                }
-            });
-
-            PREVIOUS_RELEASE_DATE = rel.getDate();
-            System.out.println();
-        }
-         */
 
         //RITORNO AL MASTER
         System.out.println("Ripristino repository al branch master...");
@@ -127,7 +83,7 @@ public class Main {
         testDataset(datasetFinale);
 
         //scrivo dati sul csv
-        CsvExporter.exportToCsv(datasetFinale,outputDatasetPath);
+        CsvExporter.exportToCsv(datasetFinale, OUTPUT_DATASET_PATH);
 
     }
 }
