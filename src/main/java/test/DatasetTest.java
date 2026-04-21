@@ -68,7 +68,7 @@ public class DatasetTest {
             if (lastSeenRelease.containsKey(name)) {
                 ClassMetrics prev = lastSeenRelease.get(name);
 
-                // 5. Monotonia: NR, NFix, NAuth e Loc Added TOTALI non possono mai diminuire
+                // 5. Monotonia: I TOTALI non possono mai diminuire nel tempo
                 if (current.getNrTotal() < prev.getNrTotal()) {
                     System.err.println("❌ ERR [Monotonia NR]: Storia diminuita per " + name + " (Rel " + prev.getReleaseID() + " -> " + relId + ")");
                     errors++;
@@ -77,20 +77,35 @@ public class DatasetTest {
                     System.err.println("❌ ERR [Monotonia Nauth]: Persi autori storici per " + name);
                     errors++;
                 }
-                // <-- AGGIUNTO
                 if (current.getLocAddedTotal() < prev.getLocAddedTotal()) {
                     System.err.println("❌ ERR [Monotonia LocAdded]: Il totale linee aggiunte è diminuito per " + name);
                     errors++;
                 }
 
-                // 6. Verifica Matematica: Il totale attuale deve essere ALMENO la somma del vecchio totale + parziale nuovo
-                if (current.getNrTotal() < (prev.getNrTotal() + current.getNrPartial())) {
-                    System.err.println("❌ ERR [Math NR]: NRtotal incoerente per " + name);
+                // 6. Verifica Matematica Esatta (Somma rigida)
+
+                // 6.1 NR: Totale DEVE essere la somma esatta
+                if (current.getNrTotal() != (prev.getNrTotal() + current.getNrPartial())) {
+                    System.err.println("❌ ERR [Math Exact NR]: Incoerenza per " + name + " (Tot: " + current.getNrTotal() + " != VecchioTot: " + prev.getNrTotal() + " + Parziale: " + current.getNrPartial() + ")");
                     errors++;
                 }
-                // <-- AGGIUNTO
-                if (current.getLocAddedTotal() < (prev.getLocAddedTotal() + current.getLocAddedPartial())) {
-                    System.err.println("❌ ERR [Math LocAdded]: LocAdded totale incoerente per " + name + ". La somma (vecchioTot + parziale) supera il totale attuale.");
+
+                // 6.2 NFix: Totale DEVE essere la somma esatta
+                if (current.getnFixTotal() != (prev.getnFixTotal() + current.getnFixPartial())) {
+                    System.err.println("❌ ERR [Math Exact NFix]: Incoerenza per " + name);
+                    errors++;
+                }
+
+                // 6.3 LocAdded: Totale DEVE essere la somma esatta
+                if (current.getLocAddedTotal() != (prev.getLocAddedTotal() + current.getLocAddedPartial())) {
+                    System.err.println("❌ ERR [Math Exact LocAdded]: Incoerenza per " + name + " (Tot: " + current.getLocAddedTotal() + " != VecchioTot: " + prev.getLocAddedTotal() + " + Parziale: " + current.getLocAddedPartial() + ")");
+                    errors++;
+                }
+
+                // 6.4 NAuth: Essendo basato su Set (Insiemi), non si può usare l'uguaglianza stretta.
+                // Il totale non può superare il vecchio totale + i nuovi parziali.
+                if (current.getnAuthTotal() > (prev.getnAuthTotal() + current.getnAuthPartial())) {
+                    System.err.println("❌ ERR [Math Set NAuth]: Autori in eccesso per " + name);
                     errors++;
                 }
             }
