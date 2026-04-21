@@ -2,12 +2,17 @@ package metrics;
 
 import entity.ClassMetrics;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.diff.*;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import utils.MetricsUtils;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import static utils.MetricsUtils.createDiffFormatter;
+import static utils.MetricsUtils.getLocAddedInCommit;
 
 public class ComputeMetrics {
 
@@ -15,60 +20,57 @@ public class ComputeMetrics {
         /* This utility class should not be instantiated */
     }
 
-    public static void setMetrics(ClassMetrics metrics, Git git, Set<String> buggyTicketList, String previousReleaseDate){
+    public static void setMetrics(ClassMetrics metrics, Git git, Set<String> buggyTicketList, String previousReleaseDate) {
 
         long previousDateTime = 0;
-        if (previousReleaseDate != null) {
-            previousDateTime = utils.Miscellaneous.toDate(previousReleaseDate).getTime();//praticamente faccio String -> Date -> Long
-        }
-
-        boolean isPartial;
+        if (previousReleaseDate != null) previousDateTime = utils.Miscellaneous.toDate(previousReleaseDate).getTime();
 
         int nr = 0;
         int nrPartial = 0;
         int nFix = 0;
         int nFixPartial = 0;
+        int locAddedTotal = 0;
+        int locAddedPartial = 0;
 
-        //uso un HashSet cosi da non dover gestire i duplicati
         HashSet<String> nAuthTotal = new HashSet<>();
         HashSet<String> nAuthPartial = new HashSet<>();
 
         try {
 
-            //head é l'identificativo del commit in cui mi trovo
-            ObjectId head = git.getRepository().resolve("HEAD");
+            Repository repository = git.getRepository();
+            ObjectId head = repository.resolve("HEAD");
 
-            Iterable<RevCommit> commits = git.log()//prendo tutti i commit relativi a quel file
-                    .add(head)//parte da qui e va indietro
-                    .addPath(metrics.getClassName())//prendo solo i commit che hanno toccato il file di interesse
+            Iterable<RevCommit> commits = git.log()
+                    .add(head)
+                    .addPath(metrics.getClassName())
                     .call();
 
-            for (RevCommit commit : commits){
+            try (DiffFormatter df = createDiffFormatter(repository, metrics.getClassName())) {
 
-                long commitDate = commit.getCommitTime() * 1000L;
-                if(commitDate > previousDateTime) isPartial = true;
-                else isPartial = false;
+                for (RevCommit commit : commits) {
 
-                //1) parte relativa a NR
-                //conta il numero di volte che una classe é stata toccata da un commit relativo a un ticket di tipo BUG, total é relativo a tutta la vita della classe
-                nr++;
-                if(isPartial) nrPartial++;
+                    boolean isPartial = (commit.getCommitTime() * 1000L) > previousDateTime;
 
-                //2) parte relativa a Nfix
-                //conta il numero di volte che una classe é stata toccata da un commit relativo a un ticket di tipo BUG, total é relativo a tutta la vita della classe
-                String message = commit.getFullMessage();//recupero il commento del commit
-                if (MetricsUtils.isCommitAFix(message, buggyTicketList)) {//controllo se nel messaggio c'é il riferimento a un ticket buggy
-                    nFix++;
-                    if(isPartial) nFixPartial++;
+                    // Metrica NR
+                    nr++;
+                    if (isPartial) nrPartial++;
+
+                    // Metrica NFix
+                    if (MetricsUtils.isCommitAFix(commit.getFullMessage(), buggyTicketList)) {
+                        nFix++;
+                        if (isPartial) nFixPartial++;
+                    }
+
+                    // Metrica NAuth
+                    String authorEmail = commit.getAuthorIdent().getEmailAddress();
+                    nAuthTotal.add(authorEmail);
+                    if (isPartial) nAuthPartial.add(authorEmail);
+
+                    // Metrica locAdded
+                    int linesAddedInCommit = getLocAddedInCommit(df, commit, repository);
+                    locAddedTotal += linesAddedInCommit;
+                    if (isPartial) locAddedPartial += linesAddedInCommit;
                 }
-
-                //3) parte relativa a Nauth
-                //numero di autori che hanno toccato una classe, ovviamente non si contano i duplicati, NauthTotal=il numero totale di autori diversi che hanno toccato quella classe fino a quel momento
-                //NauthPartial=numero di autori diversi che in quella release hanno toccato la classe
-                String authorEmail = commit.getAuthorIdent().getEmailAddress();
-                nAuthTotal.add(authorEmail);
-                if (isPartial) nAuthPartial.add(authorEmail);
-
             }
 
             metrics.setNrTotal(nr);
@@ -77,11 +79,12 @@ public class ComputeMetrics {
             metrics.setnFixPartial(nFixPartial);
             metrics.setnAuthTotal(nAuthTotal.size());
             metrics.setnAuthPartial(nAuthPartial.size());
+            metrics.setLocAddedTotal(locAddedTotal);
+            metrics.setLocAddedPartial(locAddedPartial);
 
         } catch (Exception e) {
-            System.err.println("Errore " + metrics.getClassName() + ": " + e.getMessage());
+            System.err.println("Errore generale nell'estrazione per " + metrics.getClassName() + ": " + e.getMessage());
         }
-
     }
 
 }

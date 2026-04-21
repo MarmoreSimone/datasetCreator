@@ -25,7 +25,7 @@ import static test.DatasetTest.testDataset;
 public class Main {
 
     private static final String RELEASES_FILE_PATH = "OPENJPAVersionInfo.csv";//file generato dal codice di falessi
-    private static final double RELEASES_PERCENTAGE = 0.03;//percentuale di classi da prendere
+    private static final double RELEASES_PERCENTAGE = 0.34;//percentuale di classi da prendere
     private static final String REPO_OPENJPA_PATH = "openjpa";
     private static final String OUTPUT_DATASET_PATH = "openjpa_dataset.csv";
 

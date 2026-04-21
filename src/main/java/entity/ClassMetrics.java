@@ -12,6 +12,8 @@ public class ClassMetrics {
     private int nFixPartial;
     private int nAuthTotal;
     private int nAuthPartial;
+    private int locAddedTotal;
+    private int locAddedPartial;
 
     private String buggy = "no"; // Valore di default
 
@@ -41,6 +43,14 @@ public class ClassMetrics {
     public void setnAuthTotal(int nauth){ this.nAuthTotal = nauth; }
 
     public void setnAuthPartial(int nauth){ this.nAuthPartial = nauth; }
+
+    public void setLocAddedTotal(int locAddedTotal) {
+        this.locAddedTotal = locAddedTotal;
+    }
+
+    public void setLocAddedPartial(int locAddedPartial) {
+        this.locAddedPartial = locAddedPartial;
+    }
 
     public String getClassName(){
         return this.className;
@@ -78,9 +88,17 @@ public class ClassMetrics {
         return nAuthPartial;
     }
 
+    public int getLocAddedTotal() {
+        return locAddedTotal;
+    }
+
+    public int getLocAddedPartial() {
+        return locAddedPartial;
+    }
+
     public String toCsvRow() {
         // %d si usa per gli interi (LOC, NRtotal)
-        return String.format("%s,%s,%d,%d,%d,%d,%d,%d,%d,%s",
+        return String.format("%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%s",
                 releaseID,
                 className,
                 loc,
@@ -90,6 +108,8 @@ public class ClassMetrics {
                 nFixPartial,
                 nAuthTotal,
                 nAuthPartial,
+                locAddedTotal,
+                locAddedPartial,
                 buggy
         );
     }
