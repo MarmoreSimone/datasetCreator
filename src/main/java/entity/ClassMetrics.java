@@ -2,24 +2,22 @@ package entity;
 
 public class ClassMetrics {
 
-    private String className;
+    private String filePath;
     private String releaseID;
+    private String version;
 
     private int loc;
-    private int nrTotal;
-    private int nrPartial;
-    private int nFixTotal;
-    private int nFixPartial;
-    private int nAuthTotal;
-    private int nAuthPartial;
-    private int locAddedTotal;
-    private int locAddedPartial;
+    private int nrTotal, nrPartial;
+    private int nFixTotal, nFixPartial;
+    private int nAuthTotal, nAuthPartial;
+    private int locAddedTotal, locAddedPartial;
 
     private String buggy = "no"; // Valore di default
 
-    public ClassMetrics(String className, String releaseID) {
-        this.className = className;
+    public ClassMetrics(String filePath, String releaseID, String version) {
+        this.filePath = filePath;
         this.releaseID = releaseID;
+        this.version = version;
     }
 
     public void setLoc(int loc) {
@@ -52,8 +50,8 @@ public class ClassMetrics {
         this.locAddedPartial = locAddedPartial;
     }
 
-    public String getClassName(){
-        return this.className;
+    public String getFilePath(){
+        return this.filePath;
     }
 
     public String getReleaseID() {
@@ -97,10 +95,10 @@ public class ClassMetrics {
     }
 
     public String toCsvRow() {
-        // %d si usa per gli interi (LOC, NRtotal)
-        return String.format("%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%s",
+        return String.format("%s,%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%s",
                 releaseID,
-                className,
+                version.equals("2.0.0") ? "2.0.0-beta4" : version, // <-- Modificato qui
+                filePath,
                 loc,
                 nrTotal,
                 nrPartial,

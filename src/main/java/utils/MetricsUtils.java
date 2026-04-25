@@ -1,5 +1,6 @@
 package utils;
 
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.*;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.patch.FileHeader;
@@ -9,17 +10,24 @@ import org.eclipse.jgit.treewalk.EmptyTreeIterator;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class MetricsUtils {
 
     private MetricsUtils(){}
 
     public static boolean isCommitAFix(String comment, Set<String> bugTickets) {
-
         //definisco la regex per riconoscere nel testo la presenza di una stringa del formato OPENJPA-XXXX
         Pattern pattern = Pattern.compile("OPENJPA-\\d+", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(comment);
@@ -32,26 +40,30 @@ public class MetricsUtils {
         return false;
     }
 
-    public static int getLocAddedInCommit(DiffFormatter df, RevCommit commit, Repository repository) {
+    // conta le righe aggiunte e modificate in una classe tra padre e figlio, il file da confrontare deve essere messo del df
+    public static int countLocAddedInClass(DiffFormatter df, RevCommit commit, Git git) {
+        Repository repository = git.getRepository();
         int linesAdded = 0;
 
         try {
             List<DiffEntry> diffs;
 
+            //il commit ha un parent
             if (commit.getParentCount() > 0) {
-                // Ha un parent
+                //prendo il primo parent
                 RevCommit parent = commit.getParent(0);
+                //confronta tra il padre e il figlio solo il file di interesse (lo passo al df a parte) e ottengo la lista dei cambiamenti
                 diffs = df.scan(parent.getTree(), commit.getTree());
             } else {
-                // Primo commit assoluto della storia (Orphan commit)
-                diffs = df.scan(new EmptyTreeIterator(),
-                        new CanonicalTreeParser(null, repository.newObjectReader(), commit.getTree()));
+                // caso in cui sia il primo commit del progetto, creo un albero vuoto per confrontarlo
+                diffs = df.scan(new EmptyTreeIterator(), new CanonicalTreeParser(null, repository.newObjectReader(), commit.getTree()));
             }
 
             for (DiffEntry diff : diffs) {
                 FileHeader fileHeader = df.toFileHeader(diff);
                 EditList edits = fileHeader.toEditList();
 
+                // prendo sia le righe modificate che aggiunte
                 for (Edit edit : edits) {
                     if (edit.getType() == Edit.Type.INSERT || edit.getType() == Edit.Type.REPLACE) {
                         linesAdded += edit.getLengthB();
@@ -65,15 +77,56 @@ public class MetricsUtils {
         return linesAdded;
     }
 
-    public static DiffFormatter createDiffFormatter(Repository repository, String className) {
-
+    public static DiffFormatter createDiffFormatter(Git git, String className) {
+        Repository repository = git.getRepository();
         DiffFormatter df = new DiffFormatter(DisabledOutputStream.INSTANCE);
         df.setRepository(repository);
         df.setDiffComparator(RawTextComparator.DEFAULT);
         df.setDetectRenames(true);
+        //scarto tutto tranne la classe che mi interessa
         df.setPathFilter(PathFilter.create(className));
         return df;
-
     }
 
+    // funzione che conta le righe in un file, considera tutto
+    public static int countLocInClass(String repoPath, String filePath) {
+        File file = new File(repoPath, filePath);
+        if (!file.exists()) return 0;
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            // lines() crea uno stream di righe, count() le conta.
+            // Poiché count() restituisce un 'long', facciamo un cast a (int)
+            return (int) reader.lines().count();
+        } catch (IOException _) {
+            System.err.println("Errore durante la lettura del file per contare le LOC: " + file.getPath());
+            return 0; // Se c'è un errore, restituiamo 0
+        }
+    }
+
+    // dato il path della repo trova tutti i path delle classi .java esclusi i test
+    public static List<String> getJavaFilePaths(String repoPath) throws IOException {
+        Path projectRoot = Paths.get(repoPath);
+
+        try (Stream<Path> walk = Files.walk(projectRoot)) {
+            return walk
+                    .filter(Files::isRegularFile)
+                    .filter(p -> p.toString().toLowerCase().endsWith(".java"))
+                    // Escludiamo i test ma teniamo tutto il resto della struttura
+                    .filter(p -> !p.toString().contains("/test/") && !p.toString().contains("\\test\\"))
+                    // prendiamo il percorso dalla root del progetto in poi
+                    .map(p -> convertPath(projectRoot.relativize(p).toString()))//mantengo solo la parte relativa al file del progetto
+                    .toList();
+        }
+    }
+
+    //USATO PER WINDOWS
+    private static String convertPath(String filePath) {
+
+        String convertedPath = filePath.replace("\\", "/");
+        if (convertedPath.startsWith("/")) {
+            convertedPath = convertedPath.substring(1);
+        }
+
+        return convertedPath;
+
+    }
 }

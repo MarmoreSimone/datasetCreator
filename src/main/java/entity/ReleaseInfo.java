@@ -1,22 +1,22 @@
 package entity;
 
 public class ReleaseInfo {
-    private String releaseID;//index
-    private String releaseName;//version name
+    private String releaseIndex;//index
+    private String releaseID;//version name es. 1.2.3
     private String date;//date
 
-    public ReleaseInfo(String releaseID, String releaseName, String date) {
+    public ReleaseInfo(String releaseIndex, String releaseID, String date) {
+        this.releaseIndex = releaseIndex;
         this.releaseID = releaseID;
-        this.releaseName = releaseName;
         this.date = date;
+    }
+
+    public String getReleaseIndex() {
+        return releaseIndex;
     }
 
     public String getReleaseID() {
         return releaseID;
-    }
-
-    public String getReleaseName() {
-        return releaseName;
     }
 
     public String getDate() {
@@ -25,6 +25,6 @@ public class ReleaseInfo {
 
     @Override
     public String toString() {
-        return "ReleaseID: " + releaseID + " | Name: " + releaseName + " | Date: " + date;
+        return "ReleaseID: " + releaseIndex + " | Name: " + releaseID + " | Date: " + date;
     }
 }
