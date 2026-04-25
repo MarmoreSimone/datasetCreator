@@ -1,5 +1,6 @@
 package utils;
 
+import entity.LocChanges;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.*;
 import org.eclipse.jgit.lib.Repository;
@@ -40,6 +41,58 @@ public class MetricsUtils {
         return false;
     }
 
+    public static LocChanges getDetailedLocChanges(DiffFormatter df, RevCommit commit, Git git) {
+        Repository repository = git.getRepository();
+        int added = 0;
+        int deleted = 0;
+        int modified = 0;
+
+        try {
+            List<DiffEntry> diffs;
+
+            if (commit.getParentCount() > 0) {
+
+                RevCommit parent = commit.getParent(0);
+                diffs = df.scan(parent.getTree(), commit.getTree());
+            } else {
+                // Caso del primo commit assoluto del progetto
+                diffs = df.scan(new EmptyTreeIterator(), new CanonicalTreeParser(null, repository.newObjectReader(), commit.getTree()));
+            }
+
+            for (DiffEntry diff : diffs) {
+                FileHeader fileHeader = df.toFileHeader(diff);
+                org.eclipse.jgit.diff.EditList edits = fileHeader.toEditList();
+
+                for (org.eclipse.jgit.diff.Edit edit : edits) {
+                    int a = edit.getLengthA(); // Righe nel vecchio commit (Lato A)
+                    int b = edit.getLengthB(); // Righe nel nuovo commit (Lato B)
+
+                    switch (edit.getType()) {
+                        case INSERT:
+                            added += b;
+                            break;
+                        case DELETE:
+                            deleted += a;
+                            break;
+                        case REPLACE:
+                            // Calcolo MSR di precisione per le modifiche
+                            int mod = Math.min(a, b);
+                            modified += mod;
+                            added += (b - mod);
+                            deleted += (a - mod);
+                            break;
+                        case EMPTY:
+                            break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Errore nel calcolo del Diff al commit " + commit.getId().getName() + " : " + e.getMessage());
+        }
+
+            return new LocChanges(added,deleted,modified);
+    }
+
     // conta le righe aggiunte e modificate in una classe tra padre e figlio, il file da confrontare deve essere messo del df
     public static int countLocAddedInClass(DiffFormatter df, RevCommit commit, Git git) {
         Repository repository = git.getRepository();
@@ -52,6 +105,7 @@ public class MetricsUtils {
             if (commit.getParentCount() > 0) {
                 //prendo il primo parent
                 RevCommit parent = commit.getParent(0);
+                if(parent.getTree() == null ) System.out.println("diocane");
                 //confronta tra il padre e il figlio solo il file di interesse (lo passo al df a parte) e ottengo la lista dei cambiamenti
                 diffs = df.scan(parent.getTree(), commit.getTree());
             } else {
@@ -128,5 +182,35 @@ public class MetricsUtils {
 
         return convertedPath;
 
+    }
+
+    // conta le righe aggiunte, modificate e rimosse in una classe tra padre e figlio, il file da confrontare deve essere messo del df
+    public static int calculateChurnInClass(DiffFormatter df, RevCommit commit, Git git) {
+        Repository repository = git.getRepository();
+        int churn = 0;
+
+        try {
+            List<DiffEntry> diffs;
+
+            if (commit.getParentCount() > 0) {
+                RevCommit parent = commit.getParent(0);
+                diffs = df.scan(parent.getTree(), commit.getTree());
+            } else {
+                // Caso primo commit
+                diffs = df.scan(new EmptyTreeIterator(), new CanonicalTreeParser(null, repository.newObjectReader(), commit.getTree()));
+            }
+
+            for (DiffEntry diff : diffs) {
+                FileHeader fileHeader = df.toFileHeader(diff);
+                EditList edits = fileHeader.toEditList();
+
+                for (Edit edit : edits) churn += edit.getLengthA() + edit.getLengthB();
+            }
+
+        } catch (Exception e) {
+            System.err.println("Errore nel calcolo del Churn al commit " + commit.getId().getName() + " : " + e.getMessage());
+        }
+
+        return churn;
     }
 }

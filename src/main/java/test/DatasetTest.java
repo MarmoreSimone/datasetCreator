@@ -2,196 +2,76 @@ package test;
 
 import entity.ClassMetrics;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DatasetTest {
 
-        private DatasetTest(){}
+    private DatasetTest() {}
 
-    public static void testDataset(List<ClassMetrics> dataset) {
-        int errors = 0;
-        int warnings = 0;
-
-        // Set per contare i percorsi file univoci che presentano ALMENO UN ERRORE
-        Set<String> filesWithErrors = new HashSet<>();
-
-        // Mappa per confrontare la stessa classe tra release diverse (Monotonia)
-        Map<String, ClassMetrics> lastSeenRelease = new HashMap<>();
-
-        System.out.println("\n--- [AVVIO ANALISI INTEGRITÀ DATASET] ---");
-
-        for (ClassMetrics current : dataset) {
-            String name = current.getFilePath();
-            String relId = current.getReleaseID();
-
-            // Flag per tracciare se questa specifica riga ha generato un errore
-            boolean currentHasError = false;
-
-            // --- A. TEST COERENZA INTERNA (All'interno della stessa riga) ---
-
-            // 1. Relazione Commit-Autori
-            if (current.getNrPartial() > 0 && current.getnAuthPartial() == 0) {
-              //  System.err.println("❌ ERR [Auth]: " + name + " [Rel " + relId + "] ha " + current.getNrPartial() + " commit ma 0 autori parziali.");
-                errors++;
-                currentHasError = true;
-            }
-
-            // 2. Vincolo Fisico
-            if (current.getnAuthPartial() > current.getNrPartial()) {
-              //  System.err.println("❌ ERR [Limit]: " + name + " [Rel " + relId + "] ha più autori (" + current.getnAuthPartial() + ") che commit (" + current.getNrPartial() + ").");
-                errors++;
-                currentHasError = true;
-            }
-
-            // 3. Vincolo Storico (Generico)
-            if (current.getNrPartial() > current.getNrTotal() ||
-                    current.getnFixPartial() > current.getnFixTotal() ||
-                    current.getnAuthPartial() > current.getnAuthTotal() ||
-                    current.getLocAddedPartial() > current.getLocAddedTotal()) {
-               // System.err.println("❌ ERR [History]: Valori parziali superano i totali per " + name + " [Rel " + relId + "]");
-                errors++;
-                currentHasError = true;
-            }
-
-            // 4. Test Esistenza (Questo è un WARN, quindi NON lo contiamo come errore per il Set)
-            if (current.getLoc() <= 0) {
-              //  System.err.println("⚠️ WARN [LOC]: " + name + " ha LOC=0 nella Rel " + relId + ". (Controllare se git.clean() ha rimosso un file tracciato)");
-                warnings++;
-            }
-
-            // 4.1 Valori Negativi Loc Added
-            if (current.getLocAddedPartial() < 0 || current.getLocAddedTotal() < 0) {
-             //   System.err.println("❌ ERR [Negative LOC]: Valori LocAdded negativi per " + name + " [Rel " + relId + "]");
-                errors++;
-                currentHasError = true;
-            }
-
-            // 4.2 Relazione Commit-LOC Added
-            if (current.getNrPartial() == 0 && current.getLocAddedPartial() > 0) {
-              //  System.err.println("❌ ERR [Commit-LOC]: " + name + " [Rel " + relId + "] ha 0 commit ma " + current.getLocAddedPartial() + " LOC aggiunte.");
-                errors++;
-                currentHasError = true;
-            }
-
-            // --- B. TEST DI EVOLUZIONE (Confronto con la release precedente dello stesso file) ---
-
-            if (lastSeenRelease.containsKey(name)) {
-                ClassMetrics prev = lastSeenRelease.get(name);
-
-                // 5. Monotonia
-                if (current.getNrTotal() < prev.getNrTotal()) {
-                  //  System.err.println("❌ ERR [Math Exact NR]: Incoerenza per " + name + " (Tot: " + current.getNrTotal() + " != VecchioTot: " + prev.getNrTotal() + " + Parziale: " + current.getNrPartial() + ")");
-                    errors++;
-                    currentHasError = true;
-                }
-                if (current.getnAuthTotal() < prev.getnAuthTotal()) {
-                  //  System.err.println("❌ ERR [Monotonia Nauth]: Persi autori storici per " + name);
-                    errors++;
-                    currentHasError = true;
-                }
-                if (current.getLocAddedTotal() < prev.getLocAddedTotal()) {
-                  //  System.err.println("❌ ERR [Monotonia LocAdded]: Il totale linee aggiunte è diminuito per " + name);
-                    errors++;
-                    currentHasError = true;
-                }
-
-                // 6. Verifica Matematica Esatta
-                if (current.getNrTotal() != (prev.getNrTotal() + current.getNrPartial())) {
-                   // System.err.println("❌ ERR [Math Exact NR]: Incoerenza per " + name + " (Tot: " + current.getNrTotal() + " != VecchioTot: " + prev.getNrTotal() + " + Parziale: " + current.getNrPartial() + ")");
-                    errors++;
-                    currentHasError = true;
-                }
-
-                if (current.getnFixTotal() != (prev.getnFixTotal() + current.getnFixPartial())) {
-                   // System.err.println("❌ ERR [Math Exact NFix]: Incoerenza per " + name);
-                    errors++;
-                    currentHasError = true;
-                }
-
-                if (current.getLocAddedTotal() != (prev.getLocAddedTotal() + current.getLocAddedPartial())) {
-                   // System.err.println("❌ ERR [Math Exact LocAdded]: Incoerenza per " + name + " (Tot: " + current.getLocAddedTotal() + " != VecchioTot: " + prev.getLocAddedTotal() + " + Parziale: " + current.getLocAddedPartial() + ")");
-                    errors++;
-                    currentHasError = true;
-                }
-
-                if (current.getnAuthTotal() > (prev.getnAuthTotal() + current.getnAuthPartial())) {
-                   // System.err.println("❌ ERR [Math Set NAuth]: Autori in eccesso per " + name);
-                    errors++;
-                    currentHasError = true;
-                }
-            }
-
-            // Se è stato trovato almeno un errore in questo file per questa release, lo aggiungiamo al Set
-            if (currentHasError) {
-                filesWithErrors.add(name);
-            }
-
-            // Memorizzo questo stato per confrontarlo con la prossima release della stessa classe
-            lastSeenRelease.put(name, current);
-        }
-
-        // --- REPORT FINALE AGGIORNATO ---
-        System.out.println("------------------------------------------");
-
-        if (errors == 0) {
-            System.out.println("✅ ESITO: Il dataset è logicamente consistente.");
-        } else {
-            System.err.println("❌ ESITO: Trovati " + errors + " errori logici in " + filesWithErrors.size() + " file univoci. Non usare questo dataset per ML.");
-        }
-
-        if (warnings > 0) {
-            System.out.println("⚠️ NOTA: " + warnings + " avvisi rilevati.");
-        }
-        System.out.println("------------------------------------------\n");
-    }
-
-    public static void testRows(List<ClassMetrics> dataset){
+    public static void testRows(List<ClassMetrics> dataset) {
         int errors = 0;
 
-        for(int i=0;i<dataset.size();i++){
-            if(isValidRow(dataset.get(i)) == false) errors++;
+        for (int i = 0; i < dataset.size(); i++) {
+            if (!isValidRow(dataset.get(i))) errors++;
         }
 
-        System.out.println("righe con errori: " + errors);
-
+        System.out.println("righe con errori logici base: " + errors);
     }
 
     private static boolean isValidRow(ClassMetrics current) {
 
         // 1. Validazione LOC (Linee di codice)
-        // Se la classe esiste nel dataset, deve avere almeno 1 riga di codice.
-        // E i valori aggiunti non possono mai essere negativi.
         if (current.getLoc() <= 0 || current.getLocAddedPartial() < 0 || current.getLocAddedTotal() < 0) {
             return false;
         }
 
         // 2. Relazione Commit -> Autori
-        // Se c'è almeno 1 commit parziale, deve esserci almeno 1 autore parziale.
         if (current.getNrPartial() > 0 && current.getnAuthPartial() == 0) {
             return false;
         }
 
         // 3. Limite Fisico Autori/Commit
-        // Gli autori parziali (persone diverse) non possono essere numericamente
-        // superiori al totale dei commit parziali effettuati.
         if (current.getnAuthPartial() > current.getNrPartial()) {
             return false;
         }
 
-        // 4. Relazione Commit -> LocAdded
-        // Se non ci sono stati commit (NrPartial = 0), non possono essere state
-        // aggiunte nuove linee di codice in quella specifica release.
-        if (current.getNrPartial() == 0 && current.getLocAddedPartial() > 0) {
-            return false;
+        // 4. Relazione Commit -> LocAdded e Churn
+        // Se non ci sono commit, non ci possono essere modifiche
+        if (current.getNrPartial() == 0) {
+            if (current.getLocAddedPartial() > 0 || current.getChurnPartial() > 0) {
+                return false;
+            }
         }
 
-        // 5. Coerenza Parziale/Totale
-        // I valori parziali (fatti in questa release) non possono logicamente
-        // superare i totali cumulativi accumulati fino a questa release.
+        // 5. Coerenza Parziale/Totale di Base
         if (current.getNrPartial() > current.getNrTotal() ||
                 current.getnFixPartial() > current.getnFixTotal() ||
                 current.getnAuthPartial() > current.getnAuthTotal() ||
-                current.getLocAddedPartial() > current.getLocAddedTotal()) {
+                current.getLocAddedPartial() > current.getLocAddedTotal() ||
+                current.getChurnPartial() > current.getChurnTotal()) { // NUOVO: Churn parziale non può superare il totale cumulativo
+            return false;
+        }
+
+        // 6. Validazione Specifica CHURN
+        // Il Churn è sempre >= LocAdded (perché Churn = Added + Modified + Deleted)
+        if (current.getChurnPartial() < current.getLocAddedPartial() ||
+                current.getChurnTotal() < current.getLocAddedTotal()) {
+            return false;
+        }
+
+        // Il Max Churn non può superare il Churn Assoluto (nella stessa finestra temporale)
+        if (current.getMaxChurnPartial() > current.getChurnPartial() ||
+                current.getMaxChurnTotal() > current.getChurnTotal()) {
+            return false;
+        }
+
+        // L'Avg Churn deve essere logicamente compreso tra il Max Churn e il minimo teorico (0)
+        // Avg = Churn / NrCommit. Quindi se Churn > 0 e NrCommit > 0, Avg deve per forza essere <= MaxChurn.
+        if (current.getAvgChurnPartial() > current.getMaxChurnPartial() ||
+                current.getAvgChurnTotal() > current.getMaxChurnTotal()) {
             return false;
         }
 
@@ -199,4 +79,80 @@ public class DatasetTest {
         return true;
     }
 
+    public static boolean validateDatasetInMemory(List<ClassMetrics> dataset) {
+        System.out.println("\n--- AVVIO VALIDAZIONE IN MEMORIA DEL DATASET ---");
+        List<String> righeFallite = new ArrayList<>();
+
+        // Mappa storica: NomeClasse -> (ReleaseID -> Metriche)
+        Map<String, Map<String, ClassMetrics>> historyMap = new HashMap<>();
+
+        for (int i = 0; i < dataset.size(); i++) {
+            ClassMetrics current = dataset.get(i);
+            int logicalRow = i + 1;
+
+            // 1. TEST SULLA SINGOLA RIGA
+            if (!isValidRow(current)) {
+                righeFallite.add("[Elemento " + logicalRow + "] Errore Logico Singolo per: " + current.getFilePath() + " in release " + current.getReleaseID());
+            }
+
+            // 2. TEST STORICO GENEALOGICO E MATEMATICO
+            String className = current.getFilePath();
+            String currentRelease = current.getReleaseID();
+            String predecessorRelease = current.getPredecessorID();
+
+            if (predecessorRelease != null && !"NONE".equals(predecessorRelease)
+                    && historyMap.containsKey(className)
+                    && historyMap.get(className).containsKey(predecessorRelease)) {
+
+                ClassMetrics past = historyMap.get(className).get(predecessorRelease);
+
+                // A. EQUAZIONI ESATTE (Le somme devono combaciare perfettamente)
+                if (current.getNrTotal() != past.getNrTotal() + current.getNrPartial()) {
+                    righeFallite.add("[Elemento " + logicalRow + "] Matematica fallita (" + className + "): NrTotal non somma.");
+                }
+
+                if (current.getnFixTotal() != past.getnFixTotal() + current.getnFixPartial()) {
+                    righeFallite.add("[Elemento " + logicalRow + "] Matematica fallita (" + className + "): nFixTotal non somma.");
+                }
+
+                if (current.getLocAddedTotal() != past.getLocAddedTotal() + current.getLocAddedPartial()) {
+                    righeFallite.add("[Elemento " + logicalRow + "] Matematica fallita (" + className + "): LocAddedTotal non somma.");
+                }
+
+                // NUOVO: La somma del Churn Assoluto passato + parziale deve fare il totale
+                if (current.getChurnTotal() != past.getChurnTotal() + current.getChurnPartial()) {
+                    righeFallite.add("[Elemento " + logicalRow + "] Matematica fallita (" + className + "): ChurnTotal (" + current.getChurnTotal() + ") != past (" + past.getChurnTotal() + ") + partial (" + current.getChurnPartial() + ")");
+                }
+
+                // NUOVO: Il Max Churn Totale DEVE essere il maggiore tra il (Max Churn Passato) e il (Max Churn Parziale Corrente)
+                int expectedMaxTotal = Math.max(past.getMaxChurnTotal(), current.getMaxChurnPartial());
+                if (current.getMaxChurnTotal() != expectedMaxTotal) {
+                    righeFallite.add("[Elemento " + logicalRow + "] Logica Max Churn fallita (" + className + "): MaxChurnTotal (" + current.getMaxChurnTotal() + ") non corrisponde al picco storico.");
+                }
+
+                // B. LOGICA DEGLI INSIEMI (Autori)
+                if (current.getnAuthTotal() < past.getnAuthTotal() ||
+                        current.getnAuthTotal() > past.getnAuthTotal() + current.getnAuthPartial()) {
+                    righeFallite.add("[Elemento " + logicalRow + "] Logica Insiemi fallita (" + className + "): Incoerenza sugli autori unici rispetto al padre logico.");
+                }
+            }
+
+            // Aggiorniamo la mappa storica
+            historyMap.putIfAbsent(className, new HashMap<>());
+            historyMap.get(className).put(currentRelease, current);
+        }
+
+        // --- STAMPA RISULTATI ---
+        if (!righeFallite.isEmpty()) {
+            System.err.println("❌ VALIDAZIONE FALLITA: Trovati " + righeFallite.size() + " errori prima dell'export.");
+            for (int i = 0; i < Math.min(righeFallite.size(), 30); i++) {
+                System.err.println("  - " + righeFallite.get(i));
+            }
+            if (righeFallite.size() > 30) System.err.println("  ... e altri " + (righeFallite.size() - 30) + " errori.");
+            return false;
+        } else {
+            System.out.println("✅ VALIDAZIONE COMPLETATA CON SUCCESSO! I dati in memoria (incluso il Churn) sono matematicamente perfetti.");
+            return true;
+        }
+    }
 }

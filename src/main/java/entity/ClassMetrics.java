@@ -11,6 +11,10 @@ public class ClassMetrics {
     private int nFixTotal, nFixPartial;
     private int nAuthTotal, nAuthPartial;
     private int locAddedTotal, locAddedPartial;
+    private int churnTotal, churnPartial;
+    private int maxChurnTotal, maxChurnPartial;
+    private int avgChurnTotal, avgChurnPartial;
+    private int age;
 
     private String buggy = "no"; // Valore di default
 
@@ -20,6 +24,7 @@ public class ClassMetrics {
         this.version = version;
     }
 
+    //setter
     public void setLoc(int loc) {
         this.loc = loc;
     }
@@ -50,6 +55,33 @@ public class ClassMetrics {
         this.locAddedPartial = locAddedPartial;
     }
 
+    public void setChurnTotal(int churnTotal) {
+        this.churnTotal = churnTotal;
+    }
+
+    public void setChurnPartial(int churnPartial) {
+        this.churnPartial = churnPartial;
+    }
+
+    public void setMaxChurnTotal(int maxChurnTotal) {
+        this.maxChurnTotal = maxChurnTotal;
+    }
+
+    public void setMaxChurnPartial(int maxChurnPartial) {
+        this.maxChurnPartial = maxChurnPartial;
+    }
+
+    public void setAvgChurnPartial(int avgChurnPartial) {
+        this.avgChurnPartial = avgChurnPartial;
+    }
+
+    public void setAvgChurnTotal(int avgChurnTotal) {
+        this.avgChurnTotal = avgChurnTotal;
+    }
+
+    public void setAge(int age){ this.age = age; }
+
+    //getter
     public String getFilePath(){
         return this.filePath;
     }
@@ -94,8 +126,36 @@ public class ClassMetrics {
         return locAddedPartial;
     }
 
+    public int getChurnTotal() {
+        return churnTotal;
+    }
+
+    public int getChurnPartial() {
+        return churnPartial;
+    }
+
+    public int getMaxChurnTotal() {
+        return maxChurnTotal;
+    }
+
+    public int getMaxChurnPartial() {
+        return maxChurnPartial;
+    }
+
+    public int getAvgChurnPartial() {
+        return avgChurnPartial;
+    }
+
+    public int getAvgChurnTotal() {
+        return avgChurnTotal;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
     public String toCsvRow() {
-        return String.format("%s,%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%s",
+        return String.format("%s,%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%s",
                 releaseID,
                 version.equals("2.0.0") ? "2.0.0-beta4" : version, // <-- Modificato qui
                 filePath,
@@ -108,7 +168,23 @@ public class ClassMetrics {
                 nAuthPartial,
                 locAddedTotal,
                 locAddedPartial,
+                churnTotal,
+                churnPartial,
+                maxChurnTotal,
+                maxChurnPartial,
+                avgChurnTotal,
+                avgChurnPartial,
                 buggy
         );
+    }
+
+    //togliere, serve per il test
+    //todo
+    private String predecessorID;
+    public String getPredecessorID() {
+        return predecessorID;
+    }
+    public void setPredecessorID(String predecessorID) {
+        this.predecessorID = predecessorID;
     }
 }

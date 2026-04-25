@@ -13,6 +13,7 @@ import java.util.*;
 import metrics.ComputeMetrics;
 
 import static test.DatasetTest.testRows;
+import static test.DatasetTest.validateDatasetInMemory;
 import static utils.MetricsUtils.countLocInClass;
 import static utils.MetricsUtils.getJavaFilePaths;
 
@@ -20,7 +21,7 @@ import static utils.MetricsUtils.getJavaFilePaths;
 public class Main {
 
     private static final String RELEASES_FILE_PATH = "OPENJPAVersionInfo.csv";//file generato dal codice di falessi
-    private static final double RELEASES_PERCENTAGE = 1;//percentuale di classi da prendere
+    private static final double RELEASES_PERCENTAGE = 0.34;//percentuale di classi da prendere
     private static final String REPO_OPENJPA_PATH = "openjpa";
     private static final String OUTPUT_DATASET_PATH = "openjpa_dataset.csv";
 
@@ -70,10 +71,16 @@ public class Main {
 
                     List<String> classPaths = getJavaFilePaths(REPO_OPENJPA_PATH);
                     System.out.println("Totale classi: " + classPaths.size());
+                    //todo
+                    //togli
+                    String predID = (logicalPredecessor != null) ? logicalPredecessor.getReleaseID() : "NONE";
 
                     classPaths.parallelStream().forEach(filePath -> {
                         ClassMetrics metrics = new ClassMetrics(filePath, rel.getReleaseIndex(), rel.getReleaseID());
                         metrics.setLoc(countLocInClass(REPO_OPENJPA_PATH, filePath));
+                        //todo
+                        //togli serve per il test, il predecessor
+                        metrics.setPredecessorID(predID);
                         ComputeMetrics.computeMetrics(metrics, git, buggyTicketsID, currentReleaseId, finalPreviousReleaseHash);
                         datasetFinale.add(metrics);
                     });
@@ -85,7 +92,7 @@ public class Main {
                 git.reset().setMode(org.eclipse.jgit.api.ResetCommand.ResetType.HARD).setRef("master").call();
                 System.out.println("Ripristino completato");
 
-                testRows(datasetFinale);
+                validateDatasetInMemory(datasetFinale);
                 CsvExporter.exportToCsv(datasetFinale, OUTPUT_DATASET_PATH);
             }
 
