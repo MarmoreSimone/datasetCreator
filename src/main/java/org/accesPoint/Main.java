@@ -12,7 +12,6 @@ import utils.*;
 import java.util.*;
 import metrics.ComputeMetrics;
 
-import static test.DatasetTest.testRows;
 import static test.DatasetTest.validateDatasetInMemory;
 import static utils.MetricsUtils.countLocInClass;
 import static utils.MetricsUtils.getJavaFilePaths;
@@ -81,7 +80,7 @@ public class Main {
                         //todo
                         //togli serve per il test, il predecessor
                         metrics.setPredecessorID(predID);
-                        ComputeMetrics.computeMetrics(metrics, git, buggyTicketsID, currentReleaseId, finalPreviousReleaseHash);
+                        ComputeMetrics.computeMetrics(metrics, git, buggyTicketsID, currentReleaseId, finalPreviousReleaseHash, rel.getDate());
                         datasetFinale.add(metrics);
                     });
 

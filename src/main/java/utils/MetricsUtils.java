@@ -3,6 +3,7 @@ package utils;
 import entity.LocChanges;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.*;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.patch.FileHeader;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -18,6 +19,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -93,44 +96,6 @@ public class MetricsUtils {
             return new LocChanges(added,deleted,modified);
     }
 
-    // conta le righe aggiunte e modificate in una classe tra padre e figlio, il file da confrontare deve essere messo del df
-    public static int countLocAddedInClass(DiffFormatter df, RevCommit commit, Git git) {
-        Repository repository = git.getRepository();
-        int linesAdded = 0;
-
-        try {
-            List<DiffEntry> diffs;
-
-            //il commit ha un parent
-            if (commit.getParentCount() > 0) {
-                //prendo il primo parent
-                RevCommit parent = commit.getParent(0);
-                if(parent.getTree() == null ) System.out.println("diocane");
-                //confronta tra il padre e il figlio solo il file di interesse (lo passo al df a parte) e ottengo la lista dei cambiamenti
-                diffs = df.scan(parent.getTree(), commit.getTree());
-            } else {
-                // caso in cui sia il primo commit del progetto, creo un albero vuoto per confrontarlo
-                diffs = df.scan(new EmptyTreeIterator(), new CanonicalTreeParser(null, repository.newObjectReader(), commit.getTree()));
-            }
-
-            for (DiffEntry diff : diffs) {
-                FileHeader fileHeader = df.toFileHeader(diff);
-                EditList edits = fileHeader.toEditList();
-
-                // prendo sia le righe modificate che aggiunte
-                for (Edit edit : edits) {
-                    if (edit.getType() == Edit.Type.INSERT || edit.getType() == Edit.Type.REPLACE) {
-                        linesAdded += edit.getLengthB();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("Errore nel calcolo del Diff al commit " + commit.getId().getName() + " : " + e.getMessage());
-        }
-
-        return linesAdded;
-    }
-
     public static DiffFormatter createDiffFormatter(Git git, String className) {
         Repository repository = git.getRepository();
         DiffFormatter df = new DiffFormatter(DisabledOutputStream.INSTANCE);
@@ -184,33 +149,69 @@ public class MetricsUtils {
 
     }
 
-    // conta le righe aggiunte, modificate e rimosse in una classe tra padre e figlio, il file da confrontare deve essere messo del df
-    public static int calculateChurnInClass(DiffFormatter df, RevCommit commit, Git git) {
-        Repository repository = git.getRepository();
-        int churn = 0;
+    public static int calculateAgeInDays(int oldestCommitTime, ObjectId currentReleaseHash, Git git, String currentReleaseDate) {
+        // se la variabile non è mai stata aggiornata, significa che la classe non ha commit
+        if (oldestCommitTime == Integer.MAX_VALUE) {
+            return 0;
+        }
 
         try {
+            // leggo la stringa passata dal parametro (es. "2007-04-15") e la converto in date
+            LocalDate parsedDate = LocalDate.parse(currentReleaseDate);
+
+            // converto la data in secondi
+            int releaseTime = (int) parsedDate.atStartOfDay(ZoneOffset.UTC).toEpochSecond();
+
+            // calcolo la differenza di tempo
+            int ageInSeconds = releaseTime - oldestCommitTime;
+
+            // protezione da eventuali "viaggi nel tempo"
+            if (ageInSeconds < 0) {
+                System.err.println("viaggio nel tempo");
+                return 0;
+            }
+
+            // converto i secondi in giorni
+            return ageInSeconds / (60 * 60 * 24);
+
+        } catch (Exception e) {
+            System.err.println("Errore nel calcolo dell'Age tramite stringa: " + e.getMessage());
+            return 0;
+        }
+    }
+
+    // mi dice il numero di altre classi che sono state toccate oltre a questa in un commit
+    public static int getChangeSetSize(RevCommit commit, Git git) {
+        int changeSetSize = 0;
+
+        // creo un formatter pulito senza PathFilter cosi da poter prendere tutte le classi
+        try (DiffFormatter df = new DiffFormatter(org.eclipse.jgit.util.io.DisabledOutputStream.INSTANCE)) {
+            df.setRepository(git.getRepository());
+            df.setDiffComparator(org.eclipse.jgit.diff.RawTextComparator.DEFAULT);
+            df.setDetectRenames(true);
+
             List<DiffEntry> diffs;
 
             if (commit.getParentCount() > 0) {
-                RevCommit parent = commit.getParent(0);
-                diffs = df.scan(parent.getTree(), commit.getTree());
+                try (org.eclipse.jgit.revwalk.RevWalk rw = new org.eclipse.jgit.revwalk.RevWalk(git.getRepository())) {
+                    RevCommit parent = rw.parseCommit(commit.getParent(0).getId());
+                    diffs = df.scan(parent.getTree(), commit.getTree());
+                }
             } else {
-                // Caso primo commit
-                diffs = df.scan(new EmptyTreeIterator(), new CanonicalTreeParser(null, repository.newObjectReader(), commit.getTree()));
+                // Primo commit
+                diffs = df.scan(new org.eclipse.jgit.treewalk.EmptyTreeIterator(),
+                        new org.eclipse.jgit.treewalk.CanonicalTreeParser(null, git.getRepository().newObjectReader(), commit.getTree()));
             }
 
-            for (DiffEntry diff : diffs) {
-                FileHeader fileHeader = df.toFileHeader(diff);
-                EditList edits = fileHeader.toEditList();
-
-                for (Edit edit : edits) churn += edit.getLengthA() + edit.getLengthB();
-            }
+            // La grandezza della lista è esattamente il numero di file toccati indipendentemente dal tipo di modifica
+            changeSetSize = diffs.size();
 
         } catch (Exception e) {
-            System.err.println("Errore nel calcolo del Churn al commit " + commit.getId().getName() + " : " + e.getMessage());
+            System.err.println("Errore nel calcolo del Change Set Size: " + e.getMessage());
         }
 
-        return churn;
+        return changeSetSize;
     }
+
+
 }

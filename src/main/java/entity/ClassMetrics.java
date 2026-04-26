@@ -15,6 +15,9 @@ public class ClassMetrics {
     private int maxChurnTotal, maxChurnPartial;
     private int avgChurnTotal, avgChurnPartial;
     private int age;
+    private int chgSetTotal, chgSetPartial;
+    private int maxChgSetTotal, maxChgSetPartial;
+    private int avgChangeSetTotal, avgChangeSetPartial;
 
     private String buggy = "no"; // Valore di default
 
@@ -80,6 +83,30 @@ public class ClassMetrics {
     }
 
     public void setAge(int age){ this.age = age; }
+
+    public void setChgSetTotal(int chgSetTotal) {
+        this.chgSetTotal = chgSetTotal;
+    }
+
+    public void setChgSetPartial(int chgSetPartial) {
+        this.chgSetPartial = chgSetPartial;
+    }
+
+    public void setMaxChgSetTotal(int maxChgSetTotal) {
+        this.maxChgSetTotal = maxChgSetTotal;
+    }
+
+    public void setMaxChgSetPartial(int maxChgSetPartial) {
+        this.maxChgSetPartial = maxChgSetPartial;
+    }
+
+    public void setAvgChgSetTotal(int avgChangeSetTotal) {
+        this.avgChangeSetTotal = avgChangeSetTotal;
+    }
+
+    public void setAvgChgSetPartial(int avgChangeSetPartial) {
+        this.avgChangeSetPartial = avgChangeSetPartial;
+    }
 
     //getter
     public String getFilePath(){
@@ -154,8 +181,40 @@ public class ClassMetrics {
         return age;
     }
 
+    public int getAvgChangeSetPartial() {
+        return avgChangeSetPartial;
+    }
+
+    public int getAvgChangeSetTotal() {
+        return avgChangeSetTotal;
+    }
+
+    public int getChgSetPartial() {
+        return chgSetPartial;
+    }
+
+    public int getChgSetTotal() {
+        return chgSetTotal;
+    }
+
+    public int getMaxChgSetPartial() {
+        return maxChgSetPartial;
+    }
+
+    public int getMaxChgSetTotal() {
+        return maxChgSetTotal;
+    }
+
+    public String getBuggy() {
+        return buggy;
+    }
+
+    public void setBuggy() {
+        this.buggy = "yes";
+    }
+
     public String toCsvRow() {
-        return String.format("%s,%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%s",
+        return String.format("%s,%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%s",
                 releaseID,
                 version.equals("2.0.0") ? "2.0.0-beta4" : version, // <-- Modificato qui
                 filePath,
@@ -174,6 +233,13 @@ public class ClassMetrics {
                 maxChurnPartial,
                 avgChurnTotal,
                 avgChurnPartial,
+                age,
+                chgSetTotal,
+                chgSetPartial,
+                maxChgSetTotal,
+                maxChgSetPartial,
+                avgChangeSetTotal,
+                avgChangeSetPartial,
                 buggy
         );
     }
@@ -186,5 +252,39 @@ public class ClassMetrics {
     }
     public void setPredecessorID(String predecessorID) {
         this.predecessorID = predecessorID;
+    }
+
+    public void setAllMetrics(int nrTotal, int nrPartial,
+                              int nFixTotal, int nFixPartial,
+                              int nAuthTotal, int nAuthPartial,
+                              int locAddedTotal, int locAddedPartial,
+                              int churnTotal, int churnPartial,
+                              int maxChurnTotal, int maxChurnPartial,
+                              int avgChurnTotal, int avgChurnPartial,
+                              int age,
+                              int chgSetTotal, int chgSetPartial,
+                              int maxChgSetTotal, int maxChgSetPartial,
+                              int avgChangeSetTotal, int avgChangeSetPartial) {
+        this.nrTotal = nrTotal;
+        this.nrPartial = nrPartial;
+        this.nFixTotal = nFixTotal;
+        this.nFixPartial = nFixPartial;
+        this.nAuthTotal = nAuthTotal;
+        this.nAuthPartial = nAuthPartial;
+        this.locAddedTotal = locAddedTotal;
+        this.locAddedPartial = locAddedPartial;
+        this.churnTotal = churnTotal;
+        this.churnPartial = churnPartial;
+        this.maxChurnTotal = maxChurnTotal;
+        this.maxChurnPartial = maxChurnPartial;
+        this.avgChurnTotal = avgChurnTotal;
+        this.avgChurnPartial = avgChurnPartial;
+        this.age = age;
+        this.chgSetTotal = chgSetTotal;
+        this.chgSetPartial = chgSetPartial;
+        this.maxChgSetTotal = maxChgSetTotal;
+        this.maxChgSetPartial = maxChgSetPartial;
+        this.avgChangeSetTotal = avgChangeSetTotal;
+        this.avgChangeSetPartial = avgChangeSetPartial;
     }
 }

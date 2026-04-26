@@ -10,7 +10,7 @@ public class CsvExporter {
 
     private CsvExporter(){}
 
-    private static final String HEADER = "ReleaseID,version,ClassName,LOC,NRtotal,NRpartial,NfixTotal,NfixPartial,NauthTotal,NauthPartial,locAddedTotal,locAddedPartial,churnTotal,ChurnPartial,maxChurnTotal,maxChurnPartial,avgChurnTotal,avgChurnPartial,Buggy";
+    private static final String HEADER = "ReleaseID,version,ClassName,LOC,NRtotal,NRpartial,NfixTotal,NfixPartial,NauthTotal,NauthPartial,locAddedTotal,locAddedPartial,churnTotal,ChurnPartial,maxChurnTotal,maxChurnPartial,avgChurnTotal,avgChurnPartial,age,chgSetTotal,chgSetPartial,maxChangeSetTotal,maxChangeSetPartial,avgChgSetTotal,avgChgSetPartial,Buggy";
 
     public static void exportToCsv(List<ClassMetrics> classMetrics, String outputDatasetPath) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputDatasetPath))) {

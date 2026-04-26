@@ -11,16 +11,6 @@ public class DatasetTest {
 
     private DatasetTest() {}
 
-    public static void testRows(List<ClassMetrics> dataset) {
-        int errors = 0;
-
-        for (int i = 0; i < dataset.size(); i++) {
-            if (!isValidRow(dataset.get(i))) errors++;
-        }
-
-        System.out.println("righe con errori logici base: " + errors);
-    }
-
     private static boolean isValidRow(ClassMetrics current) {
 
         // 1. Validazione LOC (Linee di codice)
@@ -38,10 +28,9 @@ public class DatasetTest {
             return false;
         }
 
-        // 4. Relazione Commit -> LocAdded e Churn
-        // Se non ci sono commit, non ci possono essere modifiche
+        // 4. Relazione Commit -> LocAdded, Churn e ChangeSet
         if (current.getNrPartial() == 0) {
-            if (current.getLocAddedPartial() > 0 || current.getChurnPartial() > 0) {
+            if (current.getLocAddedPartial() > 0 || current.getChurnPartial() > 0 || current.getChgSetPartial() > 0) {
                 return false;
             }
         }
@@ -51,27 +40,56 @@ public class DatasetTest {
                 current.getnFixPartial() > current.getnFixTotal() ||
                 current.getnAuthPartial() > current.getnAuthTotal() ||
                 current.getLocAddedPartial() > current.getLocAddedTotal() ||
-                current.getChurnPartial() > current.getChurnTotal()) { // NUOVO: Churn parziale non può superare il totale cumulativo
+                current.getChurnPartial() > current.getChurnTotal() ||
+                current.getChgSetPartial() > current.getChgSetTotal()) { // NUOVO: ChgSet
             return false;
         }
 
         // 6. Validazione Specifica CHURN
-        // Il Churn è sempre >= LocAdded (perché Churn = Added + Modified + Deleted)
         if (current.getChurnPartial() < current.getLocAddedPartial() ||
                 current.getChurnTotal() < current.getLocAddedTotal()) {
             return false;
         }
 
-        // Il Max Churn non può superare il Churn Assoluto (nella stessa finestra temporale)
         if (current.getMaxChurnPartial() > current.getChurnPartial() ||
                 current.getMaxChurnTotal() > current.getChurnTotal()) {
             return false;
         }
 
-        // L'Avg Churn deve essere logicamente compreso tra il Max Churn e il minimo teorico (0)
-        // Avg = Churn / NrCommit. Quindi se Churn > 0 e NrCommit > 0, Avg deve per forza essere <= MaxChurn.
         if (current.getAvgChurnPartial() > current.getMaxChurnPartial() ||
                 current.getAvgChurnTotal() > current.getMaxChurnTotal()) {
+            return false;
+        }
+
+        // 7. NUOVO: Validazione AGE (L'età non può mai essere negativa)
+        if (current.getAge() < 0) {
+            return false;
+        }
+
+        // 8. NUOVO: Validazione Specifica CHANGE SET
+        // Poiché ogni commit tocca almeno la classe che stiamo analizzando,
+        // il totale dei file toccati (ChgSet) deve essere >= al numero di commit.
+        if (current.getNrPartial() > 0 && current.getChgSetPartial() < current.getNrPartial()) {
+            return false;
+        }
+        if (current.getNrTotal() > 0 && current.getChgSetTotal() < current.getNrTotal()) {
+            return false;
+        }
+
+        // 9. Validazione Fisica delle LOC
+        if (current.getLoc() > current.getLocAddedTotal()) {
+            return false;
+        }
+
+        // Il Max ChgSet non può superare la somma assoluta
+        if (current.getMaxChgSetPartial() > current.getChgSetPartial() ||
+                current.getMaxChgSetTotal() > current.getChgSetTotal()) {
+            return false;
+        }
+
+        // L'Avg ChgSet deve essere <= al Max ChgSet
+        if (current.getAvgChangeSetPartial() > current.getMaxChgSetPartial() ||
+                current.getAvgChangeSetTotal() > current.getMaxChgSetTotal()) {
             return false;
         }
 
@@ -83,7 +101,6 @@ public class DatasetTest {
         System.out.println("\n--- AVVIO VALIDAZIONE IN MEMORIA DEL DATASET ---");
         List<String> righeFallite = new ArrayList<>();
 
-        // Mappa storica: NomeClasse -> (ReleaseID -> Metriche)
         Map<String, Map<String, ClassMetrics>> historyMap = new HashMap<>();
 
         for (int i = 0; i < dataset.size(); i++) {
@@ -119,21 +136,37 @@ public class DatasetTest {
                     righeFallite.add("[Elemento " + logicalRow + "] Matematica fallita (" + className + "): LocAddedTotal non somma.");
                 }
 
-                // NUOVO: La somma del Churn Assoluto passato + parziale deve fare il totale
                 if (current.getChurnTotal() != past.getChurnTotal() + current.getChurnPartial()) {
-                    righeFallite.add("[Elemento " + logicalRow + "] Matematica fallita (" + className + "): ChurnTotal (" + current.getChurnTotal() + ") != past (" + past.getChurnTotal() + ") + partial (" + current.getChurnPartial() + ")");
+                    righeFallite.add("[Elemento " + logicalRow + "] Matematica fallita (" + className + "): ChurnTotal non somma.");
                 }
 
-                // NUOVO: Il Max Churn Totale DEVE essere il maggiore tra il (Max Churn Passato) e il (Max Churn Parziale Corrente)
-                int expectedMaxTotal = Math.max(past.getMaxChurnTotal(), current.getMaxChurnPartial());
-                if (current.getMaxChurnTotal() != expectedMaxTotal) {
-                    righeFallite.add("[Elemento " + logicalRow + "] Logica Max Churn fallita (" + className + "): MaxChurnTotal (" + current.getMaxChurnTotal() + ") non corrisponde al picco storico.");
+                // NUOVO: La somma del Change Set passato + parziale deve fare il totale
+                if (current.getChgSetTotal() != past.getChgSetTotal() + current.getChgSetPartial()) {
+                    righeFallite.add("[Elemento " + logicalRow + "] Matematica fallita (" + className + "): ChgSetTotal non somma.");
                 }
 
-                // B. LOGICA DEGLI INSIEMI (Autori)
+                // B. LOGICA DEI MASSIMI STORICI
+                int expectedMaxChurnTotal = Math.max(past.getMaxChurnTotal(), current.getMaxChurnPartial());
+                if (current.getMaxChurnTotal() != expectedMaxChurnTotal) {
+                    righeFallite.add("[Elemento " + logicalRow + "] Logica Max Churn fallita (" + className + "): MaxChurnTotal non corrisponde al picco storico.");
+                }
+
+                // NUOVO: Il Max Change Set Totale deve derivare storicamente dal passato o dal parziale corrente
+                int expectedMaxChgTotal = Math.max(past.getMaxChgSetTotal(), current.getMaxChgSetPartial());
+                if (current.getMaxChgSetTotal() != expectedMaxChgTotal) {
+                    righeFallite.add("[Elemento " + logicalRow + "] Logica Max ChgSet fallita (" + className + "): MaxChgSetTotal non corrisponde al picco storico.");
+                }
+
+                // C. LOGICA DEGLI INSIEMI E TEMPO
                 if (current.getnAuthTotal() < past.getnAuthTotal() ||
                         current.getnAuthTotal() > past.getnAuthTotal() + current.getnAuthPartial()) {
-                    righeFallite.add("[Elemento " + logicalRow + "] Logica Insiemi fallita (" + className + "): Incoerenza sugli autori unici rispetto al padre logico.");
+                    righeFallite.add("[Elemento " + logicalRow + "] Logica Insiemi fallita (" + className + "): Incoerenza sugli autori.");
+                }
+
+                // NUOVO: Il codice non può viaggiare indietro nel tempo.
+                // L'età della classe nella release corrente DEVE essere >= all'età nella release precedente.
+                if (current.getAge() < past.getAge()) {
+                    righeFallite.add("[Elemento " + logicalRow + "] Logica Tempo fallita (" + className + "): L'Age della classe è diminuita rispetto alla release precedente.");
                 }
             }
 
@@ -151,7 +184,7 @@ public class DatasetTest {
             if (righeFallite.size() > 30) System.err.println("  ... e altri " + (righeFallite.size() - 30) + " errori.");
             return false;
         } else {
-            System.out.println("✅ VALIDAZIONE COMPLETATA CON SUCCESSO! I dati in memoria (incluso il Churn) sono matematicamente perfetti.");
+            System.out.println("✅ VALIDAZIONE COMPLETATA CON SUCCESSO! I dati in memoria (inclusi Age e ChgSet) sono matematicamente perfetti.");
             return true;
         }
     }
