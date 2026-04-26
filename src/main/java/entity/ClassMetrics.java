@@ -18,6 +18,7 @@ public class ClassMetrics {
     private int chgSetTotal, chgSetPartial;
     private int maxChgSetTotal, maxChgSetPartial;
     private int avgChangeSetTotal, avgChangeSetPartial;
+    private int smells;
 
     private String buggy = "no"; // Valore di default
 
@@ -106,6 +107,10 @@ public class ClassMetrics {
 
     public void setAvgChgSetPartial(int avgChangeSetPartial) {
         this.avgChangeSetPartial = avgChangeSetPartial;
+    }
+
+    public void setSmells(int smells){
+        this.smells = smells;
     }
 
     //getter
@@ -205,6 +210,8 @@ public class ClassMetrics {
         return maxChgSetTotal;
     }
 
+    public int getSmells(){return smells;}
+
     public String getBuggy() {
         return buggy;
     }
@@ -214,7 +221,7 @@ public class ClassMetrics {
     }
 
     public String toCsvRow() {
-        return String.format("%s,%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%s",
+        return String.format("%s,%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%s",
                 releaseID,
                 version.equals("2.0.0") ? "2.0.0-beta4" : version, // <-- Modificato qui
                 filePath,
@@ -240,6 +247,7 @@ public class ClassMetrics {
                 maxChgSetPartial,
                 avgChangeSetTotal,
                 avgChangeSetPartial,
+                smells,
                 buggy
         );
     }

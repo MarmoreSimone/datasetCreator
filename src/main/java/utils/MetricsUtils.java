@@ -1,6 +1,11 @@
 package utils;
 
 import entity.LocChanges;
+import net.sourceforge.pmd.PMDConfiguration;
+import net.sourceforge.pmd.PmdAnalysis;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleViolation;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.*;
 import org.eclipse.jgit.lib.ObjectId;
@@ -21,7 +26,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -146,7 +153,6 @@ public class MetricsUtils {
         }
 
         return convertedPath;
-
     }
 
     public static int calculateAgeInDays(int oldestCommitTime, ObjectId currentReleaseHash, Git git, String currentReleaseDate) {
@@ -213,5 +219,52 @@ public class MetricsUtils {
         return changeSetSize;
     }
 
+    /**
+     * Esegue PMD su tutta la repository in un'unica passata e restituisce
+     * una mappa <PercorsoRelativo, NumeroDiSmell>
+     */
+    public static Map<String, Integer> getSmells(String repoPath) {
+        Map<String, Integer> smellsMap = new HashMap<>();
+        PMDConfiguration config = new PMDConfiguration();
 
+        config.setDefaultLanguageVersion(LanguageRegistry.PMD.getLanguageById("java").getDefaultVersion());
+
+        // Regole mirate per la Defect Prediction
+        config.addRuleSet("category/java/design.xml");
+        config.addRuleSet("category/java/errorprone.xml");
+
+        try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
+            // Aggiungiamo l'intera directory. PMD troverà automaticamente tutti i .java
+            pmd.files().addDirectory(Paths.get(repoPath));
+
+            Report report = pmd.performAnalysisAndCollectReport();
+
+            // Iteriamo sulle violazioni direttamente come oggetti Java
+            for (RuleViolation violation : report.getViolations()) {
+                String fullPath = violation.getFileId().getAbsolutePath();
+
+                // Puliamo il path per renderlo identico a quello che usi nel dataset
+                String relativePath = cleanPath(fullPath, repoPath);
+
+                smellsMap.put(relativePath, smellsMap.getOrDefault(relativePath, 0) + 1);
+            }
+        } catch (Exception e) {
+            System.err.println("Errore durante l'analisi PMD batch: " + e.getMessage());
+        }
+
+        return smellsMap;
+    }
+
+    private static String cleanPath(String fullPath, String repoPath) {
+        // Uniformiamo i separatori per evitare bug tra Windows e Linux
+        String cleanFullPath = fullPath.replace("\\", "/");
+        String cleanRepoPath = repoPath.replace("\\", "/");
+
+        int index = cleanFullPath.indexOf(cleanRepoPath);
+        if (index != -1) {
+            // +1 per rimuovere lo slash iniziale (es: da "/src/..." a "src/...")
+            return cleanFullPath.substring(index + cleanRepoPath.length() + 1);
+        }
+        return fullPath;
+    }
 }

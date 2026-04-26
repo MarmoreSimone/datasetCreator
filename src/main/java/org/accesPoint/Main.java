@@ -50,6 +50,10 @@ public class Main {
 
                     // uso checkoutToTag che mi porta sul commit esatto della release
                     RevCommit releaseCommit = GitUtils.checkoutToTag(git, currentTag);
+
+                    System.out.println("Esecuzione analisi PMD per la release in corso...");
+                    Map<String, Integer> currentSmellsMap = MetricsUtils.getSmells(REPO_OPENJPA_PATH);
+
                     final ObjectId currentReleaseId = releaseCommit.getId();
 
                     // trovo il predecessore logico
@@ -70,10 +74,12 @@ public class Main {
 
                     List<String> classPaths = getJavaFilePaths(REPO_OPENJPA_PATH);
                     System.out.println("Totale classi: " + classPaths.size());
+
                     //todo
                     //togli
                     String predID = (logicalPredecessor != null) ? logicalPredecessor.getReleaseID() : "NONE";
 
+                    // itero su tutte le classi, metti solo .stream per non usare il parallelismo
                     classPaths.parallelStream().forEach(filePath -> {
                         ClassMetrics metrics = new ClassMetrics(filePath, rel.getReleaseIndex(), rel.getReleaseID());
                         metrics.setLoc(countLocInClass(REPO_OPENJPA_PATH, filePath));
@@ -81,6 +87,8 @@ public class Main {
                         //togli serve per il test, il predecessor
                         metrics.setPredecessorID(predID);
                         ComputeMetrics.computeMetrics(metrics, git, buggyTicketsID, currentReleaseId, finalPreviousReleaseHash, rel.getDate());
+                        metrics.setSmells(currentSmellsMap.getOrDefault(filePath, 0));
+
                         datasetFinale.add(metrics);
                     });
 
