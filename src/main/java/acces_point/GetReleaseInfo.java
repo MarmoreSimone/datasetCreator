@@ -1,4 +1,4 @@
-package accesPoint;
+package acces_point;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,18 +9,15 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
+import java.util.*;
 
 //codice del falessi paro paro
 public class GetReleaseInfo {
 	
-	   public static HashMap<LocalDateTime, String> releaseNames;
-	   public static HashMap<LocalDateTime, String> releaseID;
-	   public static ArrayList<LocalDateTime> releases;
-	   public static Integer numVersions;
+	   private static Map<LocalDateTime, String> releaseNames;
+	   private static Map<LocalDateTime, String> releaseID;
+	   private static List<LocalDateTime> releases;
+	   private static Integer numVersions;
 	   static void main(String[] args) throws IOException, JSONException {
 		   
 		   String projName ="OPENJPA";
@@ -87,7 +84,6 @@ public class GetReleaseInfo {
 		               e.printStackTrace();
 		            }
 		         }
-		         return;
 		   }
  
 	
@@ -98,7 +94,6 @@ public class GetReleaseInfo {
 		         releases.add(dateTime);
 		      releaseNames.put(dateTime, name);
 		      releaseID.put(dateTime, id);
-		      return;
 		   }
 
 

@@ -1,4 +1,4 @@
-package accesPoint;
+package acces_point;
 
 import csv.CsvExporter;
 import csv.CsvReader;

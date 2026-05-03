@@ -1,4 +1,4 @@
-package accesPoint;
+package acces_point;
 
 import org.json.JSONArray;
 import org.json.JSONException;
