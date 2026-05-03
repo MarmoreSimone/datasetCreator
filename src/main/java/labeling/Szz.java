@@ -39,47 +39,20 @@ public class Szz {
         while (iterator.hasNext()) {
             TicketBug ticket = iterator.next();
 
-            // calcolo opening version (OV)
-            if (ticket.getCreationDate() != null) {
-                int ov = getReleaseIndexAfterDate(ticket.getCreationDate(), releases);
-                ticket.setOv(ov);
-            }
+            // calcolo OV e FV
+            calculateOvAndFv(ticket, releases);
 
-            // calcolo fixed version (FV)
-            if (ticket.getResolutionDate() != null) {
-                int fv = getReleaseIndexAfterDate(ticket.getResolutionDate(), releases);
-                ticket.setFv(fv);
-            }
-
-            // se fv < ov il ticket é sporco e lo scarto
+            // se fv < ov il ticket è sporco
             if (ticket.getFv() < ticket.getOv()) {
                 scartatiFvMinoreOv++;
                 iterator.remove();
                 continue;
             }
 
-            // calcolo injected version (IV)
-            List<String> affectedVersions = ticket.getAffectedVersions();
+            // calcolo IV
+            calculateIv(ticket, releases);
 
-            if (affectedVersions != null && !affectedVersions.isEmpty()) {
-                // nel caso ci siano più AV prendo la prima che è la più vecchia
-                String oldestVersion = affectedVersions.get(0);
-                int iv = getReleaseIndexByName(oldestVersion, releases);
-                ticket.setIv(iv);
-            } else {
-                // caso banale
-                // prendo la data di uscita della seconda release
-                LocalDate dataRelease2 = LocalDate.parse(releases.get(1).getDate().substring(0, 10));
-                // se il ticket è stato aperto prima dell'uscita della Release 2, il bug è PER FORZA della release 1
-                if (ticket.getCreationDate() != null && ticket.getCreationDate().isBefore(dataRelease2)) {
-                    ticket.setIv(1);
-                } else {
-                    // Se non c'è l'affected Version ed è stato creato dopo la Release 2, metto iv a -1
-                    ticket.setIv(-1);
-                }
-            }
-
-            // se ov < iv il ticket é sporco e lo scarto
+            // se ov < iv il ticket è sporco
             if (ticket.getIv() != -1 && ticket.getOv() < ticket.getIv()) {
                 scartatiOvMinoreIv++;
                 iterator.remove();
@@ -91,6 +64,41 @@ public class Szz {
         System.out.println("Ticket scartati per OV < IV: " + scartatiOvMinoreIv);
         System.out.println("Ticket rimasti puliti: " + tickets.size());
         System.out.println("");
+    }
+
+    private static void calculateOvAndFv(TicketBug ticket, List<ReleaseInfo> releases) {
+        if (ticket.getCreationDate() != null) {
+            int ov = getReleaseIndexAfterDate(ticket.getCreationDate(), releases);
+            ticket.setOv(ov);
+        }
+
+        if (ticket.getResolutionDate() != null) {
+            int fv = getReleaseIndexAfterDate(ticket.getResolutionDate(), releases);
+            ticket.setFv(fv);
+        }
+    }
+
+    private static void calculateIv(TicketBug ticket, List<ReleaseInfo> releases) {
+        List<String> affectedVersions = ticket.getAffectedVersions();
+
+        // caso con Affected Versions: estraggo la prima e calcolo l'indice
+        if (affectedVersions != null && !affectedVersions.isEmpty()) {
+            String oldestVersion = affectedVersions.get(0);
+            int iv = getReleaseIndexByName(oldestVersion, releases);
+            ticket.setIv(iv);
+            return;
+        }
+
+        LocalDate dataRelease2 = LocalDate.parse(releases.get(1).getDate().substring(0, 10));
+
+        // Se il ticket è stato aperto prima dell'uscita della Release 2, il bug è della release 1
+        if (ticket.getCreationDate() != null && ticket.getCreationDate().isBefore(dataRelease2)) {
+            ticket.setIv(1);
+            return;
+        }
+
+        // metto iv=-1 e sará calcolato in seguito con proportion
+        ticket.setIv(-1);
     }
 
     // calcola il valore di proportion
