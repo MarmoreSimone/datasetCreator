@@ -87,7 +87,7 @@ public class Main {
                             tempPreviousReleaseHash = GitUtils.getObjectIdFromTag(git, predTag);
                         }
                     } else {
-                        System.out.println("Nessun predecessore logico (Questa è la primissima release!).");
+                        System.out.println("Nessun predecessore logico (prima release).");
                     }
 
                     final ObjectId finalPreviousReleaseHash = tempPreviousReleaseHash;
