@@ -4,14 +4,19 @@ import csv.CsvExporter;
 import csv.CsvReader;
 import entity.ClassMetrics;
 import entity.ReleaseInfo;
+import entity.TicketBug;
+import labeling.Szz;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevCommit;
 import utils.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
 import metrics.ComputeMetrics;
 
+import static labeling.Szz.applySzzOracle;
 import static test.DatasetTest.validateDatasetInMemory;
 import static utils.MetricsUtils.countLocInClass;
 import static utils.MetricsUtils.getJavaFilePaths;
@@ -20,17 +25,31 @@ import static utils.MetricsUtils.getJavaFilePaths;
 public class Main {
 
     private static final String RELEASES_FILE_PATH = "OPENJPAVersionInfo.csv";//file generato dal codice di falessi
-    private static final double RELEASES_PERCENTAGE = 0.34;//percentuale di classi da prendere
+    private static final double RELEASES_PERCENTAGE = 0.34;//percentuale di release
+    private static final double RELEASES_PERCENTAGE_FOR_SZZ = 1;//percentuale di release su cui calcolare proportion
     private static final String REPO_OPENJPA_PATH = "openjpa";
     private static final String OUTPUT_DATASET_PATH = "openjpa_dataset.csv";
+    private static final String BUGGY_TICKET_PATH = "jiraTicketsEnriched.csv";
 
     public static void main(){
         try {
             List<ReleaseInfo> releases = CsvReader.getReleasesInfo(RELEASES_FILE_PATH, RELEASES_PERCENTAGE);
-            Set<String> buggyTicketsID = CsvReader.retrieveTicketsID();
+            List<ReleaseInfo> releasesForSzz = CsvReader.getReleasesInfo(RELEASES_FILE_PATH, RELEASES_PERCENTAGE_FOR_SZZ);
+
+            List<TicketBug> buggyTicketsList = CsvReader.getTicketsFromCsv(BUGGY_TICKET_PATH,releasesForSzz);
+
+            // FASE 1 SZZ: calcolo ov, fv, iv per i ticket che hanno le affected versions e uso proportion per gli altri, gli passo la lista di tutte le release del progetto
+            Szz.completeSzz(buggyTicketsList,releasesForSzz);
+
             List<ClassMetrics> datasetFinale = Collections.synchronizedList(new ArrayList<>());
 
+            // estraggo dalla List di buggyTickets un set che continene solo gli ID per questioni di ottimizzazione
+            Set<String> buggyTicketsID = buggyTicketsList.stream().map(TicketBug::getKey).map(String::toUpperCase).collect(Collectors.toSet());
+
             try (Git git = GitUtils.openRepository(REPO_OPENJPA_PATH)) {
+
+                // FASE 2 SZZ: creo una mappa dove per ogni classe .java ho tutti i ticket bug che la riguardano
+                Map<String, List<TicketBug>> fileToBugsMap = Szz.mapBuggyFiles(git.getRepository(), buggyTicketsList);
 
                 // recupero i tag delle release direttamente dal progetto
                 List<String> gitTags = GitUtils.getAllGitTags(git);
@@ -51,7 +70,11 @@ public class Main {
                     // uso checkoutToTag che mi porta sul commit esatto della release
                     RevCommit releaseCommit = GitUtils.checkoutToTag(git, currentTag);
 
-                    System.out.println("Esecuzione analisi PMD per la release in corso...");
+                    // recupero tutti i classPath nella release i-esima
+                    List<String> classPaths = getJavaFilePaths(REPO_OPENJPA_PATH);
+                    System.out.println("Totale classi: " + classPaths.size());
+
+                    // calcolo il numero di smell per ogni singola classe nella release i-esima
                     Map<String, Integer> currentSmellsMap = MetricsUtils.getSmells(REPO_OPENJPA_PATH);
 
                     final ObjectId currentReleaseId = releaseCommit.getId();
@@ -72,9 +95,6 @@ public class Main {
 
                     final ObjectId finalPreviousReleaseHash = tempPreviousReleaseHash;
 
-                    List<String> classPaths = getJavaFilePaths(REPO_OPENJPA_PATH);
-                    System.out.println("Totale classi: " + classPaths.size());
-
                     //todo
                     //togli
                     String predID = (logicalPredecessor != null) ? logicalPredecessor.getReleaseID() : "NONE";
@@ -88,12 +108,14 @@ public class Main {
                         metrics.setPredecessorID(predID);
                         ComputeMetrics.computeMetrics(metrics, git, buggyTicketsID, currentReleaseId, finalPreviousReleaseHash, rel.getDate());
                         metrics.setSmells(currentSmellsMap.getOrDefault(filePath, 0));
-
                         datasetFinale.add(metrics);
                     });
 
                     System.out.println();
                 }
+
+                // FASE 3 SZZ: faccio il labeling finale usando iv e fv dei ticket buggy relativi ad una data classe
+                applySzzOracle(datasetFinale, fileToBugsMap);
 
                 // ripristino al master
                 git.reset().setMode(org.eclipse.jgit.api.ResetCommand.ResetType.HARD).setRef("master").call();

@@ -47,6 +47,7 @@ public class ComputeMetrics {
 
             try (DiffFormatter df = MetricsUtils.createDiffFormatter(git, metrics.getFilePath())) {
                 for (RevCommit commit : partialCommits) {
+
                     nrPartial++;// nrPartial
                     if (MetricsUtils.isCommitAFix(commit.getFullMessage(), buggyTicketList)) nFixPartial++;// nFixPartial
                     nAuthPartial.add(commit.getAuthorIdent().getEmailAddress());// nAuthPartial
@@ -63,7 +64,7 @@ public class ComputeMetrics {
 
                     // Calcolo Change Set (Quanti file sono stati toccati INSIEME a questa classe in questo commit?)
                     int currentChangeSet = MetricsUtils.getChangeSetSize(commit, git);
-                    chgSetPartial += currentChangeSet; // somma per la media
+                    chgSetPartial += currentChangeSet; // somma cumulativa per la media
 
                     if (currentChangeSet > maxChgSetPartial) {
                         maxChgSetPartial = currentChangeSet;

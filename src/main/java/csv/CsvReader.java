@@ -1,6 +1,7 @@
 package csv;
 
 import entity.ReleaseInfo;
+import entity.TicketBug;
 
 import java.io.*;
 import java.util.*;
@@ -34,32 +35,66 @@ public class CsvReader {
         int limit = (int) Math.ceil(allReleases.size() * releasePercentage);
 
         if (!allReleases.isEmpty()) {
-            System.out.println("File CSV letto con successo. Release selezionate: " + limit +
-                    " (cioè il " + (releasePercentage * 100) + "% del totale).");
+           // System.out.println("File CSV letto con successo. Release selezionate: " + limit +" (cioè il " + (releasePercentage * 100) + "% del totale).");
         }
 
         return allReleases.subList(0, limit);
     }
 
-    public static Set<String> retrieveTicketsID(){
+    public static List<TicketBug> getTicketsFromCsv(String filePath, List<ReleaseInfo> releases) {
+        List<TicketBug> tickets = new ArrayList<>();
+        String line;
+        int c=0;
+        int scartati =0;
 
-        HashSet<String> ticketList = new HashSet<>();
-
-        File file = new File("buggyTicket.txt");
-
-        try (Scanner scanner = new Scanner(file)) {
-            while (scanner.hasNextLine()) {
-                String riga = scanner.nextLine().trim();
-                if (!riga.isEmpty()) {
-                    ticketList.add(riga);
-                }
-            }
-
-        } catch (FileNotFoundException _) {
-            System.err.println("Errore: File non trovato!");
+        // lista delle release che consideriamo per szz
+        Set<String> officialReleaseNames = new HashSet<>();
+        for (ReleaseInfo rel : releases) {
+            officialReleaseNames.add(rel.getReleaseID());
         }
 
-        return ticketList;
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            br.readLine();
+
+            while ((line = br.readLine()) != null) {
+                String[] columns = line.split(",", -1);
+                c++;
+                if (columns.length >= 4) {
+                    String key = columns[0];
+                    String creation = columns[1];
+                    String resolution = columns[2];
+                    String versions = columns[3];
+
+                    // il costruttore di TicketBug si occupa di separare le versioni in caso ce ne sia piu di una
+                    TicketBug ticket = new TicketBug(key, creation, resolution, versions);
+                    List<String> avList = ticket.getAffectedVersions();
+
+                    if (avList == null || avList.isEmpty()) {
+                        // caso in cui non ho av
+                        tickets.add(ticket);
+                    } else {
+                        // prendo la prima (la più vecchia)
+                        String oldestVersion = avList.get(0);
+
+                        // se la versione esiste tra quelle prese da jira o dai TAG la aggiungo
+                        if (officialReleaseNames.contains(oldestVersion)) {
+                            tickets.add(ticket);
+                        } else {
+                            // caso in cui non esiste (fantasma), scarto il ticket
+                            scartati++;
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Errore nella lettura dei ticket: " + e.getMessage());
+        }
+
+        System.out.println("----RECUPERO TICKET JIRA----");
+        System.out.println("ticket disponibili: " + c);
+        System.out.println("ticket scartati perche' aventi prima av non esistente in jira o nei tag: " + scartati);
+        System.out.println("");
+        return tickets;
     }
 
 }

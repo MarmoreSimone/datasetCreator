@@ -1,6 +1,7 @@
 package utils;
 
 import entity.LocChanges;
+import entity.TicketBug;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -39,13 +40,13 @@ public class MetricsUtils {
     private MetricsUtils(){}
 
     public static boolean isCommitAFix(String comment, Set<String> bugTickets) {
-        //definisco la regex per riconoscere nel testo la presenza di una stringa del formato OPENJPA-XXXX
+        // definisco la regex per riconoscere nel testo la presenza di una stringa del formato OPENJPA-XXXX
         Pattern pattern = Pattern.compile("OPENJPA-\\d+", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(comment);
 
         while (matcher.find()) {
-            String ticketFound = matcher.group(); // Es: "OPENJPA-1422"
-            //verifico se il ticket si trova nella lista di quelli buggy
+            String ticketFound = matcher.group(); // ss: "OPENJPA-1422"
+            // verifico se il ticket si trova nella lista di quelli buggy, ne basta uno
             if (bugTickets.contains(ticketFound)) return true;
         }
         return false;
@@ -103,6 +104,7 @@ public class MetricsUtils {
             return new LocChanges(added,deleted,modified);
     }
 
+    // usare solo per confrontare classe specifica
     public static DiffFormatter createDiffFormatter(Git git, String className) {
         Repository repository = git.getRepository();
         DiffFormatter df = new DiffFormatter(DisabledOutputStream.INSTANCE);
@@ -219,10 +221,6 @@ public class MetricsUtils {
         return changeSetSize;
     }
 
-    /**
-     * Esegue PMD su tutta la repository in un'unica passata e restituisce
-     * una mappa <PercorsoRelativo, NumeroDiSmell>
-     */
     public static Map<String, Integer> getSmells(String repoPath) {
         Map<String, Integer> smellsMap = new HashMap<>();
         PMDConfiguration config = new PMDConfiguration();
