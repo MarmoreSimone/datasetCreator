@@ -116,7 +116,7 @@ public class ComputeMetrics {
             }
 
             // calcolo l'age
-            age = MetricsUtils.calculateAgeInDays(oldestCommitTime, currentReleaseHash, git, currentReleaseDate);
+            age = MetricsUtils.calculateAgeInDays(oldestCommitTime, currentReleaseDate);
 
             // calcolo l'average churn, la variabile e' inizializzata a 0, quindi nel caso
             if (nrTotal > 0) avgChurnTotal = churnTotal/nrTotal;

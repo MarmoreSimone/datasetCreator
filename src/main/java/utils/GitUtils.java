@@ -57,7 +57,7 @@ public class GitUtils {
 
             // provo solo con il tag
             if (tagRef == null) tagRef = repository.findRef(tagName);
-            if (tagRef == null) throw new Exception("Tag non trovato: " + tagName);
+            if (tagRef == null) throw new java.util.NoSuchElementException("Tag non trovato: " + tagName);
 
             //estraggo il commit dal tag
             Ref peeledRef = repository.getRefDatabase().peel(tagRef);
@@ -150,11 +150,9 @@ public class GitUtils {
             String normalizedCandidate = modifyVersionName(candidate.getReleaseID());
             ComparableVersion candidateVersion = new ComparableVersion(normalizedCandidate);
 
-            if (candidateVersion.compareTo(targetVersion) < 0) {
-                if (bestPredecessorVersion == null || candidateVersion.compareTo(bestPredecessorVersion) > 0) {
-                    bestPredecessorVersion = candidateVersion;
-                    bestPredecessor = candidate;
-                }
+            if (candidateVersion.compareTo(targetVersion) < 0 && (bestPredecessorVersion == null || candidateVersion.compareTo(bestPredecessorVersion) > 0)) {
+                bestPredecessorVersion = candidateVersion;
+                bestPredecessor = candidate;
             }
         }
         return bestPredecessor;

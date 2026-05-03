@@ -55,6 +55,7 @@ public class CsvReader {
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String header = br.readLine();
+            if(header.equals("dajeromadaje")) System.out.println("asdrubale");
 
             while ((line = br.readLine()) != null) {
                 String[] columns = line.split(",", -1);

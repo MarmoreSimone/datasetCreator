@@ -156,7 +156,7 @@ public class MetricsUtils {
         return convertedPath;
     }
 
-    public static int calculateAgeInDays(int oldestCommitTime, ObjectId currentReleaseHash, Git git, String currentReleaseDate) {
+    public static int calculateAgeInDays(int oldestCommitTime, String currentReleaseDate) {
         // se la variabile non è mai stata aggiornata, significa che la classe non ha commit
         if (oldestCommitTime == Integer.MAX_VALUE) {
             return 0;
