@@ -230,55 +230,69 @@ public class Szz {
 
         // mappa di lookup per trovare rapidamente l'oggetto TicketBug dall'ID stringa
         Map<String, TicketBug> ticketLookup = new HashMap<>();
-        for (TicketBug t : validTickets) ticketLookup.put(t.getKey(), t);
+        for (TicketBug t : validTickets) {
+            ticketLookup.put(t.getKey(), t);
+        }
 
         // risultato finale: (file path, lista dei ticket bug associati)
         Map<String, List<TicketBug>> fileToBugsMap = new HashMap<>();
 
         try (Git git = new Git(repository);
              DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE)) {
-                diffFormatter.setRepository(repository);
-                diffFormatter.setDiffComparator(RawTextComparator.DEFAULT);
-                diffFormatter.setDetectRenames(true);
 
-                // recupero tutti i commit di tutte le release
-                Iterable<RevCommit> commits = git.log().all().call();
+            diffFormatter.setRepository(repository);
+            diffFormatter.setDiffComparator(RawTextComparator.DEFAULT);
+            diffFormatter.setDetectRenames(true);
 
-                for (RevCommit commit : commits) {
-                    String comment = commit.getFullMessage();
+            // recupero tutti i commit di tutte le release
+            Iterable<RevCommit> commits = git.log().all().call();
 
-                    // recupero gli ID dei ticket presenti nel commento del commit
-                    List<String> ticketID = getTicketsFromComment(comment, ticketLookup.keySet());
+            for (RevCommit commit : commits) {
+                String comment = commit.getFullMessage();
 
-                    // ovviamente prendo solo ticket bug
-                    if (!ticketID.isEmpty()) {
+                // recupero gli ID dei ticket presenti nel commento del commit
+                List<String> ticketIDs = getTicketsFromComment(comment, ticketLookup.keySet());
 
-                        // salto il primo commit (non ha padri per il confronto diff)
-                        if (commit.getParentCount() == 0) continue;
-
-                        RevCommit parent = commit.getParent(0);
-
-                        // trovo i file modificati tra il commit corrente e il suo predecessore
-                        List<DiffEntry> diffs = diffFormatter.scan(parent.getTree(), commit.getTree());
-
-                        for (DiffEntry diff : diffs) {
-                            String filePath = diff.getNewPath();
-                            // prendo solo file .java e ignoro i test
-                            if (filePath != null && filePath.endsWith(".java") && !filePath.toLowerCase().contains("test")) {
-
-                                for (String ticketId : ticketID) {
-                                    TicketBug ticket = ticketLookup.get(ticketId);
-
-                                    // aggiungo il ticket alla lista della classe i-esima
-                                    fileToBugsMap.computeIfAbsent(filePath, k -> new ArrayList<>()).add(ticket);
-                                }
-                            }
-                        }
-                    }
+                // se non ci sono ticket bug, passo al prossimo commit
+                if (ticketIDs.isEmpty()) {
+                    continue;
                 }
+
+                // salto il primo commit (non ha padri per il confronto diff)
+                if (commit.getParentCount() == 0) {
+                    continue;
+                }
+
+                RevCommit parent = commit.getParent(0);
+
+                // trovo i file modificati tra il commit corrente e il suo predecessore
+                List<DiffEntry> diffs = diffFormatter.scan(parent.getTree(), commit.getTree());
+
+                // Delego l'estrazione e il salvataggio dei file a un metodo privato
+                processDiffsAndAssignTickets(diffs, ticketIDs, ticketLookup, fileToBugsMap);
             }
-            return fileToBugsMap;
         }
+
+        return fileToBugsMap;
+    }
+
+    //Analizza i diff e associa i file modificati (solo classi .java, ignorando i test) agli oggetti TicketBug pertinenti.
+    private static void processDiffsAndAssignTickets(List<DiffEntry> diffs, List<String> ticketIDs, Map<String, TicketBug> ticketLookup, Map<String, List<TicketBug>> fileToBugsMap) {
+        for (DiffEntry diff : diffs) {
+            String filePath = diff.getNewPath();
+
+            // prendo solo file .java e ignoro i test. Altrimenti passo al prossimo diff.
+            if (filePath == null || !filePath.endsWith(".java") || filePath.toLowerCase().contains("test")) {
+                continue;
+            }
+
+            for (String ticketId : ticketIDs) {
+                TicketBug ticket = ticketLookup.get(ticketId);
+                // aggiungo il ticket alla lista della classe
+                fileToBugsMap.computeIfAbsent(filePath, k -> new ArrayList<>()).add(ticket);
+            }
+        }
+    }
 
     public static void applySzzOracle(List<ClassMetrics> dataset, Map<String, List<TicketBug>> fileToBugsMap) {
         int classiBuggy = 0;
@@ -304,6 +318,8 @@ public class Szz {
 
         double percentuale = ((double) classiBuggy / dataset.size()) * 100;
         System.out.println("Labeling completato: trovate " + classiBuggy + " istanze Buggy nel dataset totale (" + dataset.size() + " righe, pari al " + String.format("%.2f", percentuale) + "%).");    }
-    }
+
+
+}
 
 
