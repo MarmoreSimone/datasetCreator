@@ -265,4 +265,30 @@ public class MetricsUtils {
         }
         return fullPath;
     }
+
+    // mi salvo gli smell per evitare di dover fare i checkout settordici volte
+    public static Map<String, Integer> getPredecessorSmells(Git git, String predTag, String repoPath, Map<String, Map<String, Integer>> smellsCache) throws Exception {
+
+        // Caso 1: È la primissima release, non ha predecessori
+        if (predTag == null) {
+            System.out.println("Nessun predecessore: Smells non calcolati (assunti a 0).");
+            return new HashMap<>();
+        }
+
+        // Caso 2: Cache Hit (Gli smells di questo tag li abbiamo già calcolati in passato)
+        if (smellsCache.containsKey(predTag)) {
+            System.out.println("⚡ HIT CACHE: Smells per " + predTag + " recuperati istantaneamente (NO Checkout).");
+            return smellsCache.get(predTag);
+        }
+
+        // Caso 3: Cache Miss (Dobbiamo fare il checkout su Git e calcolarli per la prima volta)
+        System.out.println("Calcolo smells per " + predTag + "...");
+        GitUtils.checkoutToTag(git, predTag);
+        Map<String, Integer> calculatedSmells = MetricsUtils.getSmells(repoPath);
+
+        // Salviamo il risultato nella cache prima di restituirlo
+        smellsCache.put(predTag, calculatedSmells);
+
+        return calculatedSmells;
+    }
 }

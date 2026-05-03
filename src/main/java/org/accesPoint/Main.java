@@ -35,7 +35,6 @@ public class Main {
         try {
             List<ReleaseInfo> releases = CsvReader.getReleasesInfo(RELEASES_FILE_PATH, RELEASES_PERCENTAGE);
             List<ReleaseInfo> releasesForSzz = CsvReader.getReleasesInfo(RELEASES_FILE_PATH, RELEASES_PERCENTAGE_FOR_SZZ);
-
             List<TicketBug> buggyTicketsList = CsvReader.getTicketsFromCsv(BUGGY_TICKET_PATH,releasesForSzz);
 
             // FASE 1 SZZ: calcolo ov, fv, iv per i ticket che hanno le affected versions e uso proportion per gli altri, gli passo la lista di tutte le release del progetto
@@ -74,17 +73,15 @@ public class Main {
                     List<String> classPaths = getJavaFilePaths(REPO_OPENJPA_PATH);
                     System.out.println("Totale classi: " + classPaths.size());
 
-                    // calcolo il numero di smell per ogni singola classe nella release i-esima
-                    Map<String, Integer> currentSmellsMap = MetricsUtils.getSmells(REPO_OPENJPA_PATH);
-
                     final ObjectId currentReleaseId = releaseCommit.getId();
 
                     // trovo il predecessore logico
                     ReleaseInfo logicalPredecessor = GitUtils.findLogicalPredecessor(releases, i);
                     ObjectId tempPreviousReleaseHash = null;
 
+                    String predTag = null;
                     if (logicalPredecessor != null) {
-                        String predTag = GitUtils.findMatchingTag(logicalPredecessor.getReleaseID(), gitTags);
+                        predTag = GitUtils.findMatchingTag(logicalPredecessor.getReleaseID(), gitTags);
                         if (predTag != null) {
                             System.out.println("Confronto: " + currentTag + " --> " + predTag);
                             tempPreviousReleaseHash = GitUtils.getObjectIdFromTag(git, predTag);
@@ -95,19 +92,30 @@ public class Main {
 
                     final ObjectId finalPreviousReleaseHash = tempPreviousReleaseHash;
 
+                    // calcolo il numero di smell per ogni singola classe nella release i-esima
+                    Map<String, Integer> currentSmellsMapTemp = new HashMap<>();
+
+                   // faccio cosi in modo da prendere gli smell a inizio release(cioé come finiva quella prima)
+                    if (predTag != null) {
+                        GitUtils.checkoutToTag(git, predTag);
+                        currentSmellsMapTemp = MetricsUtils.getSmells(REPO_OPENJPA_PATH);
+                        GitUtils.checkoutToTag(git, currentTag);
+                    }
+
+                    final Map<String, Integer> currentSmellsMap = currentSmellsMapTemp;
+
                     //todo
                     //togli
                     String predID = (logicalPredecessor != null) ? logicalPredecessor.getReleaseID() : "NONE";
 
-                    // itero su tutte le classi, metti solo .stream per non usare il parallelismo
+                    // itero su tutte le classi
                     classPaths.parallelStream().forEach(filePath -> {
                         ClassMetrics metrics = new ClassMetrics(filePath, rel.getReleaseIndex(), rel.getReleaseID());
                         metrics.setLoc(countLocInClass(REPO_OPENJPA_PATH, filePath));
-                        //todo
-                        //togli serve per il test, il predecessor
                         metrics.setPredecessorID(predID);
                         ComputeMetrics.computeMetrics(metrics, git, buggyTicketsID, currentReleaseId, finalPreviousReleaseHash, rel.getDate());
                         metrics.setSmells(currentSmellsMap.getOrDefault(filePath, 0));
+
                         datasetFinale.add(metrics);
                     });
 
