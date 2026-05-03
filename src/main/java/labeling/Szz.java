@@ -262,12 +262,8 @@ public class Szz {
                 List<String> ticketIDs = getTicketsFromComment(comment, ticketLookup.keySet());
 
                 // se non ci sono ticket bug, passo al prossimo commit
-                if (ticketIDs.isEmpty()) {
-                    continue;
-                }
-
                 // salto il primo commit (non ha padri per il confronto diff)
-                if (commit.getParentCount() == 0) {
+                if (ticketIDs.isEmpty() || commit.getParentCount() == 0) {
                     continue;
                 }
 
