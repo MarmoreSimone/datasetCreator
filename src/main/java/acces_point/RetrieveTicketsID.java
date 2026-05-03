@@ -89,7 +89,7 @@ public class RetrieveTicketsID {
                     }
 
                     // Scrivi la riga nel file CSV
-                    writer.printf("%s,%s,%s,%s\n", key, createdDate, resolvedDate, versionsStr);
+                    writer.printf("%s,%s,%s,%s%n", key, createdDate, resolvedDate, versionsStr);
                 }
 
                 System.out.println("Scaricati " + i + " ticket su " + total + "...");

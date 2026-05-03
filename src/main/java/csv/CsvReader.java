@@ -54,7 +54,7 @@ public class CsvReader {
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-            br.readLine();
+            String header = br.readLine();
 
             while ((line = br.readLine()) != null) {
                 String[] columns = line.split(",", -1);

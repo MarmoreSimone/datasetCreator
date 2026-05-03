@@ -19,6 +19,8 @@ import java.util.regex.Pattern;
 
 public class Szz {
 
+    private Szz(){}
+
     public static void completeSzz(List<TicketBug> tickets, List<ReleaseInfo> releases){
         initialMappingSZZ(tickets,releases);
         applyProportion(tickets);

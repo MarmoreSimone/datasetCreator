@@ -81,7 +81,7 @@ public class GitUtils {
         // checkout dei file
         try {
             git.checkout().setName(commitId.getName()).setForce(true).setCreateBranch(false).call();
-        } catch (CheckoutConflictException e) {
+        } catch (CheckoutConflictException _) {
             // uso le cattive
             git.reset().setMode(ResetCommand.ResetType.HARD).setRef(commitId.getName()).call();
         }

@@ -262,7 +262,7 @@ public class ClassMetrics {
         );
     }
 
-    //togliere, serve per il test
+    //togliere, serve per il test(solo la parte di predecessor)
     //todo
     private String predecessorID;
     public String getPredecessorID() {
@@ -272,37 +272,4 @@ public class ClassMetrics {
         this.predecessorID = predecessorID;
     }
 
-    public void setAllMetrics(int nrTotal, int nrPartial,
-                              int nFixTotal, int nFixPartial,
-                              int nAuthTotal, int nAuthPartial,
-                              int locAddedTotal, int locAddedPartial,
-                              int churnTotal, int churnPartial,
-                              int maxChurnTotal, int maxChurnPartial,
-                              int avgChurnTotal, int avgChurnPartial,
-                              int age,
-                              int chgSetTotal, int chgSetPartial,
-                              int maxChgSetTotal, int maxChgSetPartial,
-                              int avgChangeSetTotal, int avgChangeSetPartial) {
-        this.nrTotal = nrTotal;
-        this.nrPartial = nrPartial;
-        this.nFixTotal = nFixTotal;
-        this.nFixPartial = nFixPartial;
-        this.nAuthTotal = nAuthTotal;
-        this.nAuthPartial = nAuthPartial;
-        this.locAddedTotal = locAddedTotal;
-        this.locAddedPartial = locAddedPartial;
-        this.churnTotal = churnTotal;
-        this.churnPartial = churnPartial;
-        this.maxChurnTotal = maxChurnTotal;
-        this.maxChurnPartial = maxChurnPartial;
-        this.avgChurnTotal = avgChurnTotal;
-        this.avgChurnPartial = avgChurnPartial;
-        this.age = age;
-        this.chgSetTotal = chgSetTotal;
-        this.chgSetPartial = chgSetPartial;
-        this.maxChgSetTotal = maxChgSetTotal;
-        this.maxChgSetPartial = maxChgSetPartial;
-        this.avgChangeSetTotal = avgChangeSetTotal;
-        this.avgChangeSetPartial = avgChangeSetPartial;
-    }
 }

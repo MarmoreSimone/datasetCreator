@@ -18,7 +18,7 @@ public class GetReleaseInfo {
 	   private static Map<LocalDateTime, String> releaseID;
 	   private static List<LocalDateTime> releases;
 	   private static Integer numVersions;
-	   static void main(String[] args) throws IOException, JSONException {
+	   static void main() throws IOException, JSONException {
 		   
 		   String projName ="OPENJPA";
 		 //Fills the arraylist with releases dates and orders them
@@ -102,8 +102,7 @@ public class GetReleaseInfo {
 	      try {
 	         BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
 	         String jsonText = readAll(rd);
-	         JSONObject json = new JSONObject(jsonText);
-	         return json;
+	         return new JSONObject(jsonText);
 	       } finally {
 	         is.close();
 	       }

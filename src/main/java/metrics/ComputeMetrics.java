@@ -128,12 +128,27 @@ public class ComputeMetrics {
 
 
             // setto tutte le metriche calcolate
-            metrics.setAllMetrics(nrTotal, nrPartial, nFixTotal, nFixPartial,
-                    nAuthTotal.size(), nAuthPartial.size(),
-                    locAddedTotal, locAddedPartial, churnTotal, churnPartial,
-                    maxChurnTotal, maxChurnPartial, avgChurnTotal, avgChurnPartial,
-                    age, chgSetTotal, chgSetPartial, maxChgSetTotal, maxChgSetPartial,
-                    avgChgSetTotal, avgChgSetPartial);
+            metrics.setNrTotal(nrTotal);
+            metrics.setNrPartial(nrPartial);
+            metrics.setnFixTotal(nFixTotal);
+            metrics.setnFixPartial(nFixPartial);
+            metrics.setnAuthTotal(nAuthTotal.size());
+            metrics.setnAuthPartial(nAuthPartial.size());
+            metrics.setLocAddedTotal(locAddedTotal);
+            metrics.setLocAddedPartial(locAddedPartial);
+            metrics.setChurnTotal(churnTotal);
+            metrics.setChurnPartial(churnPartial);
+            metrics.setMaxChurnTotal(maxChurnTotal);
+            metrics.setMaxChurnPartial(maxChurnPartial);
+            metrics.setAvgChurnTotal(avgChurnTotal);
+            metrics.setAvgChurnPartial(avgChurnPartial);
+            metrics.setAge(age);
+            metrics.setChgSetTotal(chgSetTotal);
+            metrics.setChgSetPartial(chgSetPartial);
+            metrics.setMaxChgSetTotal(maxChgSetTotal);
+            metrics.setMaxChgSetPartial(maxChgSetPartial);
+            metrics.setAvgChgSetTotal(avgChgSetTotal);
+            metrics.setAvgChgSetPartial(avgChgSetPartial);
 
         } catch (Exception e) {
             System.err.println("Errore nell'estrazione per " + metrics.getFilePath() + ": " + e.getMessage());
