@@ -43,9 +43,8 @@ public class CsvReader {
 
     public static List<TicketBug> getTicketsFromCsv(String filePath, List<ReleaseInfo> releases) {
         List<TicketBug> tickets = new ArrayList<>();
-        String line;
-        int c=0;
-        int scartati =0;
+        int c = 0;
+        int scartati = 0;
 
         // lista delle release che consideriamo per szz
         Set<String> officialReleaseNames = new HashSet<>();
@@ -55,36 +54,37 @@ public class CsvReader {
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String header = br.readLine();
-            if(header.equals("dajeromadaje")) System.out.println("asdrubale");
+            if (header == null) {
+                return tickets;
+            }
 
+            String line;
             while ((line = br.readLine()) != null) {
                 String[] columns = line.split(",", -1);
                 c++;
-                if (columns.length >= 4) {
-                    String key = columns[0];
-                    String creation = columns[1];
-                    String resolution = columns[2];
-                    String versions = columns[3];
 
-                    // il costruttore di TicketBug si occupa di separare le versioni in caso ce ne sia piu di una
-                    TicketBug ticket = new TicketBug(key, creation, resolution, versions);
-                    List<String> avList = ticket.getAffectedVersions();
+                if (columns.length < 4) {
+                    continue;
+                }
 
-                    if (avList == null || avList.isEmpty()) {
-                        // caso in cui non ho av
-                        tickets.add(ticket);
-                    } else {
-                        // prendo la prima (la più vecchia)
-                        String oldestVersion = avList.get(0);
+                String key = columns[0];
+                String creation = columns[1];
+                String resolution = columns[2];
+                String versions = columns[3];
 
-                        // se la versione esiste tra quelle prese da jira o dai TAG la aggiungo
-                        if (officialReleaseNames.contains(oldestVersion)) {
-                            tickets.add(ticket);
-                        } else {
-                            // caso in cui non esiste (fantasma), scarto il ticket
-                            scartati++;
-                        }
-                    }
+                // il costruttore di TicketBug si occupa di separare le versioni in caso ce ne sia piu di una
+                TicketBug ticket = new TicketBug(key, creation, resolution, versions);
+                List<String> avList = ticket.getAffectedVersions();
+
+                boolean isAvEmpty = (avList == null || avList.isEmpty());
+
+                // se la lista è vuota (caso in cui non ho av)
+                // oppure prendo la prima (la più vecchia) e vedo se la versione esiste tra quelle prese da jira o dai TAG la aggiungo
+                if (isAvEmpty || officialReleaseNames.contains(avList.get(0))) {
+                    tickets.add(ticket);
+                } else {
+                    // caso in cui non esiste (fantasma), scarto il ticket
+                    scartati++;
                 }
             }
         } catch (IOException e) {
@@ -95,6 +95,7 @@ public class CsvReader {
         System.out.println("ticket disponibili: " + c);
         System.out.println("ticket scartati perche' aventi prima av non esistente in jira o nei tag: " + scartati);
         System.out.println("");
+
         return tickets;
     }
 
