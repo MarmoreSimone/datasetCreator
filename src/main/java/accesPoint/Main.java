@@ -1,4 +1,4 @@
-package org.accesPoint;
+package accesPoint;
 
 import csv.CsvExporter;
 import csv.CsvReader;

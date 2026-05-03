@@ -17,16 +17,25 @@ public class ComputeMetrics {
     }
 
     public static void computeMetrics(ClassMetrics metrics, Git git, Set<String> buggyTicketList, ObjectId currentReleaseHash, ObjectId previousReleaseHash, String currentReleaseDate) {
-        int nrTotal = 0, nrPartial = 0;
-        int nFixTotal = 0, nFixPartial = 0;
-        int locAddedTotal = 0, locAddedPartial = 0;
-        int churnTotal = 0, churnPartial = 0;
-        int maxChurnTotal = 0, maxChurnPartial = 0;
-        int avgChurnTotal = 0, avgChurnPartial = 0;
+        int nrTotal = 0;
+        int nrPartial = 0;
+        int nFixTotal = 0;
+        int nFixPartial = 0;
+        int locAddedTotal = 0;
+        int locAddedPartial = 0;
+        int churnTotal = 0;
+        int churnPartial = 0;
+        int maxChurnTotal = 0;
+        int maxChurnPartial = 0;
+        int avgChurnTotal = 0;
+        int avgChurnPartial = 0;
         int age;
-        int chgSetTotal = 0, chgSetPartial = 0;
-        int maxChgSetTotal = 0, maxChgSetPartial = 0;
-        int avgChgSetTotal = 0, avgChgSetPartial = 0;
+        int chgSetTotal = 0;
+        int chgSetPartial = 0;
+        int maxChgSetTotal = 0;
+        int maxChgSetPartial = 0;
+        int avgChgSetTotal = 0;
+        int avgChgSetPartial = 0;
 
         int oldestCommitTime = Integer.MAX_VALUE;
 

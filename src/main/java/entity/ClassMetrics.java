@@ -7,17 +7,27 @@ public class ClassMetrics {
     private String version;
 
     private int loc;
-    private int nrTotal, nrPartial;
-    private int nFixTotal, nFixPartial;
-    private int nAuthTotal, nAuthPartial;
-    private int locAddedTotal, locAddedPartial;
-    private int churnTotal, churnPartial;
-    private int maxChurnTotal, maxChurnPartial;
-    private int avgChurnTotal, avgChurnPartial;
+    private int nrTotal;
+    private int nrPartial;
+    private int nFixTotal;
+    private int nFixPartial;
+    private int nAuthTotal;
+    private int nAuthPartial;
+    private int locAddedTotal;
+    private int locAddedPartial;
+    private int churnTotal;
+    private int churnPartial;
+    private int maxChurnTotal;
+    private int maxChurnPartial;
+    private int avgChurnTotal;
+    private int avgChurnPartial;
     private int age;
-    private int chgSetTotal, chgSetPartial;
-    private int maxChgSetTotal, maxChgSetPartial;
-    private int avgChangeSetTotal, avgChangeSetPartial;
+    private int chgSetTotal;
+    private int chgSetPartial;
+    private int maxChgSetTotal;
+    private int maxChgSetPartial;
+    private int avgChangeSetTotal;
+    private int avgChangeSetPartial;
     private int smells;
 
     private String buggy = "no"; // Valore di default

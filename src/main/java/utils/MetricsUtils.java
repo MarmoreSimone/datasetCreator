@@ -1,7 +1,6 @@
 package utils;
 
 import entity.LocChanges;
-import entity.TicketBug;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.lang.LanguageRegistry;

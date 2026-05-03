@@ -1,4 +1,4 @@
-package org.accesPoint;
+package accesPoint;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,7 +15,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 //codice del falessi paro paro
-public class getReleaseInfo {
+public class GetReleaseInfo {
 	
 	   public static HashMap<LocalDateTime, String> releaseNames;
 	   public static HashMap<LocalDateTime, String> releaseID;

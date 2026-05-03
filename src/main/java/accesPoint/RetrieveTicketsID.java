@@ -1,4 +1,4 @@
-package org.accesPoint;
+package accesPoint;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +32,9 @@ public class RetrieveTicketsID {
     static void main() throws IOException, JSONException {
 
         String projName = "OPENJPA";
-        Integer j = 0, i = 0, total = 1;
+        Integer j = 0;
+        Integer i = 0;
+        Integer total = 1;
         String outputFile = "jiraTicketsEnriched.csv";
 
         System.out.println("Inizio download ticket Jira per il progetto " + projName + "...");

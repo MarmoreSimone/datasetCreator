@@ -2,7 +2,6 @@ package entity;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TicketBug {
@@ -11,7 +10,6 @@ public class TicketBug {
     private LocalDate resolutionDate;
     private List<String> affectedVersions;
 
-    // Indici delle release che calcolerai nella fase successiva
     private int ov; // Opening Version
     private int fv; // Fixed Version
     private int iv; // Injected Version
@@ -19,16 +17,15 @@ public class TicketBug {
     public TicketBug(String key, String creationDate, String resolutionDate, String affectedVersionsStr) {
         this.key = key;
 
-        // Conversione stringa -> LocalDate per facilitare i confronti temporali
+        // conversione stringa -> LocalDate per facilitare i confronti temporali
         this.creationDate = creationDate.equals("NONE") ? null : LocalDate.parse(creationDate);
         this.resolutionDate = resolutionDate.equals("NONE") ? null : LocalDate.parse(resolutionDate);
 
-        this.affectedVersions = new ArrayList<>(); // Crei sempre una lista vera, mutabile e sicura
+        this.affectedVersions = new ArrayList<>();
 
         if (affectedVersionsStr != null && !affectedVersionsStr.equals("NONE") && !affectedVersionsStr.isEmpty()) {
             String[] versions = affectedVersionsStr.split(";");
             for (String version : versions) {
-                // Il trim() rimuove tutti gli spazi iniziali e finali (" 1.0.0 " diventa "1.0.0")
                 this.affectedVersions.add(version.trim());
             }
         }
