@@ -53,6 +53,10 @@ public class Main {
                 // recupero i tag delle release direttamente dal progetto
                 List<String> gitTags = GitUtils.getAllGitTags(git);
 
+                // cache per gli smell
+                // mappa: tag della release -> mappa degli smell (classe -> numero di smell)
+                Map<String, Map<String, Integer>> releaseSmellsCache = new HashMap<>();
+
                 for (int i = 0; i < releases.size(); i++) {
                     ReleaseInfo rel = releases.get(i);
                     System.out.println("Analisi Release: " + rel.getReleaseID() + " (" + rel.getDate() + ")");
@@ -92,17 +96,27 @@ public class Main {
 
                     final ObjectId finalPreviousReleaseHash = tempPreviousReleaseHash;
 
-                    // calcolo il numero di smell per ogni singola classe nella release i-esima
                     Map<String, Integer> currentSmellsMapTemp = new HashMap<>();
 
-                   // faccio cosi in modo da prendere gli smell a inizio release(cioé come finiva quella prima)
+                    // prendo gli smell del predecessore (se esiste)
                     if (predTag != null) {
-                        GitUtils.checkoutToTag(git, predTag);
-                        currentSmellsMapTemp = MetricsUtils.getSmells(REPO_OPENJPA_PATH);
-                        GitUtils.checkoutToTag(git, currentTag);
+                        // se non è in cache faccio il checkout calcolo e salvo gli smell nella cache
+                        if (!releaseSmellsCache.containsKey(predTag)) {
+                            System.out.println("Calcolo smell per il predecessore " + predTag + " (Cache miss)");
+                            GitUtils.checkoutToTag(git, predTag);
+                            releaseSmellsCache.put(predTag, MetricsUtils.getSmells(REPO_OPENJPA_PATH));
+                            // torno alla release corrente
+                            GitUtils.checkoutToTag(git, currentTag);
+                        }
+                        currentSmellsMapTemp = releaseSmellsCache.get(predTag);
                     }
 
                     final Map<String, Integer> currentSmellsMap = currentSmellsMapTemp;
+
+                    // calcolo gli smell della release corrente
+                    if (!releaseSmellsCache.containsKey(currentTag)) {
+                        releaseSmellsCache.put(currentTag, MetricsUtils.getSmells(REPO_OPENJPA_PATH));
+                    }
 
                     //todo
                     //togli
@@ -114,6 +128,8 @@ public class Main {
                         metrics.setLoc(countLocInClass(REPO_OPENJPA_PATH, filePath));
                         metrics.setPredecessorID(predID);
                         ComputeMetrics.computeMetrics(metrics, git, buggyTicketsID, currentReleaseId, finalPreviousReleaseHash, rel.getDate());
+
+                        // Imposto gli smell presi all'inizio (dal predecessore logico)
                         metrics.setSmells(currentSmellsMap.getOrDefault(filePath, 0));
 
                         datasetFinale.add(metrics);
