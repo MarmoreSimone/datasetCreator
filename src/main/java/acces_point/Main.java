@@ -84,12 +84,10 @@ public class Main {
                     ObjectId tempPreviousReleaseHash = null;
 
                     String predTag = null;
-                    if (logicalPredecessor != null) {
-                        predTag = GitUtils.findMatchingTag(logicalPredecessor.getReleaseID(), gitTags);
-                        if (predTag != null) {
-                            System.out.println("Confronto: " + currentTag + " --> " + predTag);
-                            tempPreviousReleaseHash = GitUtils.getObjectIdFromTag(git, predTag);
-                        }
+                    // sonarCloud apprezza
+                    if (logicalPredecessor != null && (predTag = GitUtils.findMatchingTag(logicalPredecessor.getReleaseID(), gitTags)) != null) {
+                        System.out.println("Confronto: " + currentTag + " --> " + predTag);
+                        tempPreviousReleaseHash = GitUtils.getObjectIdFromTag(git, predTag);
                     }
 
                     final ObjectId finalPreviousReleaseHash = tempPreviousReleaseHash;
