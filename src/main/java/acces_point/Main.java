@@ -90,8 +90,6 @@ public class Main {
                             System.out.println("Confronto: " + currentTag + " --> " + predTag);
                             tempPreviousReleaseHash = GitUtils.getObjectIdFromTag(git, predTag);
                         }
-                    } else {
-                        System.out.println("Nessun predecessore logico (prima release).");
                     }
 
                     final ObjectId finalPreviousReleaseHash = tempPreviousReleaseHash;
