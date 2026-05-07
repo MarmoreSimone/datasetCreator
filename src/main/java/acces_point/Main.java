@@ -110,9 +110,7 @@ public class Main {
                     final Map<String, Integer> currentSmellsMap = currentSmellsMapTemp;
 
                     // calcolo gli smell della release corrente
-                    if (!releaseSmellsCache.containsKey(currentTag)) {
-                        releaseSmellsCache.put(currentTag, MetricsUtils.getSmells(REPO_OPENJPA_PATH));
-                    }
+                    releaseSmellsCache.computeIfAbsent(currentTag, k -> MetricsUtils.getSmells(REPO_OPENJPA_PATH));
 
                     //todo
                     //togli
