@@ -1,2 +1,2 @@
-per windows  
-nella cartella metti tutta la cartella del progetto di OpenJPA
+- per windows  
+- fai il clone di OpenJPA dentro il progetto (git clone https://github.com/apache/openjpa.git openjpa)
