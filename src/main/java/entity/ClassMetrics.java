@@ -29,6 +29,7 @@ public class ClassMetrics {
     private int avgChangeSetTotal;
     private int avgChangeSetPartial;
     private int smells;
+    private int nMethods;
 
     private String buggy = "no"; // Valore di default
 
@@ -36,6 +37,14 @@ public class ClassMetrics {
         this.filePath = filePath;
         this.releaseID = releaseID;
         this.version = version;
+    }
+
+    // costruttore per la milestone 4
+    public ClassMetrics(String filePath, int loc, int nMethods, int smell) {
+        this.filePath = filePath;
+        this.loc = loc;
+        this.nMethods = nMethods;
+        this.smells = smell;
     }
 
     //setter
@@ -230,10 +239,12 @@ public class ClassMetrics {
         this.buggy = "yes";
     }
 
+    public int getnMethods(){return this.nMethods;}
+
     public String toCsvRow() {
         return String.format("%s,%s,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%s",
                 releaseID,
-                version.equals("2.0.0") ? "2.0.0-beta4" : version, // <-- Modificato qui
+                version.equals("2.0.0") ? "2.0.0-beta4" : version,
                 filePath,
                 loc,
                 nrTotal,
