@@ -15,7 +15,7 @@ public class RetrieveTicketsID {
     private static final int PAGE_SIZE = 1000;
 
     static void main() throws IOException, JSONException {
-        String outputFile = "jiraTicketsEnriched.csv";
+        String outputFile = "src/main/java/outputs/jiraTicketsEnriched.csv";
         System.out.printf("Inizio download ticket Jira per il progetto %s...%n", PROJ_NAME);
 
         try (PrintWriter writer = new PrintWriter(new FileWriter(outputFile))) {

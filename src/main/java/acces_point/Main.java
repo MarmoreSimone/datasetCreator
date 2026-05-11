@@ -24,12 +24,12 @@ import static utils.MetricsUtils.getJavaFilePaths;
 
 public class Main {
 
-    private static final String RELEASES_FILE_PATH = "OPENJPAVersionInfo.csv";//file generato dal codice di falessi
+    private static final String RELEASES_FILE_PATH = "src/main/java/outputs/OPENJPAVersionInfo.csv";//file generato dal codice di falessi
     private static final double RELEASES_PERCENTAGE = 0.34;//percentuale di release
     private static final double RELEASES_PERCENTAGE_FOR_SZZ = 1;//percentuale di release su cui calcolare proportion
     private static final String REPO_OPENJPA_PATH = "openjpa";
-    private static final String OUTPUT_DATASET_PATH = "openjpa_dataset.csv";
-    private static final String BUGGY_TICKET_PATH = "jiraTicketsEnriched.csv";
+    private static final String OUTPUT_DATASET_PATH = "src/main/java/outputs/openjpa_dataset.csv";
+    private static final String BUGGY_TICKET_PATH = "src/main/java/outputs/jiraTicketsEnriched.csv";
 
     public static void main(){
         try {
