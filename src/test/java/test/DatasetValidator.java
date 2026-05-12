@@ -10,11 +10,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DatasetTest {
+public class DatasetValidator {
 
     private static final String DATASET_PATH = "src/main/java/outputs/openjpa_dataset.csv";
 
-    private DatasetTest() {}
+    private DatasetValidator() {}
 
     static void main(){
 
@@ -40,10 +40,8 @@ public class DatasetTest {
         }
 
         // 4. Relazione Commit -> LocAdded, Churn e ChangeSet
-        if (current.getNrPartial() == 0) {
-            if (current.getLocAddedPartial() > 0 || current.getChurnPartial() > 0 || current.getChgSetPartial() > 0) {
-                return false;
-            }
+        if (current.getNrPartial() == 0 && (current.getLocAddedPartial() > 0 || current.getChurnPartial() > 0 || current.getChgSetPartial() > 0)) {
+            return false;
         }
 
         // 5. Coerenza Parziale/Totale di Base

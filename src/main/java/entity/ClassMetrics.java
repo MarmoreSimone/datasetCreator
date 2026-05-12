@@ -273,8 +273,7 @@ public class ClassMetrics {
         );
     }
 
-    //togliere, serve per il test(solo la parte di predecessor)
-    //todo
+    // usato per test
     private String predecessorID;
     public String getPredecessorID() {
         return predecessorID;

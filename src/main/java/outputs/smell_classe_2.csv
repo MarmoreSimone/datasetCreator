@@ -1,0 +1,21 @@
+classPath,ruleName,priority,description,startLine,endLine
+openjpa\openjpa-persistence/src/main/java/org/apache/openjpa/persistence/criteria/Expressions.java,CouplingBetweenObjects,3,"High amount of different objects as members denotes a high coupling",20,2097
+openjpa\openjpa-persistence/src/main/java/org/apache/openjpa/persistence/criteria/Expressions.java,ExcessivePublicCount,3,"This class has a bunch of public methods and attributes",60,60
+openjpa\openjpa-persistence/src/main/java/org/apache/openjpa/persistence/criteria/Expressions.java,UseUtilityClass,3,"This utility class has a non-private constructor",60,60
+openjpa\openjpa-persistence/src/main/java/org/apache/openjpa/persistence/criteria/Expressions.java,CyclomaticComplexity,3,"The method 'acceptVisit(CriteriaExpressionVisitor, CriteriaExpression, Expression<?>[])' has a cyclomatic complexity of 11.",83,83
+openjpa\openjpa-persistence/src/main/java/org/apache/openjpa/persistence/criteria/Expressions.java,MutableStaticState,3,"Do not use non-final non-private static fields",740,740
+openjpa\openjpa-persistence/src/main/java/org/apache/openjpa/persistence/criteria/Expressions.java,MutableStaticState,3,"Do not use non-final non-private static fields",741,741
+openjpa\openjpa-persistence/src/main/java/org/apache/openjpa/persistence/criteria/Expressions.java,NullAssignment,3,"Assigning an Object to null is a code smell.  Consider refactoring.",776,776
+openjpa\openjpa-persistence/src/main/java/org/apache/openjpa/persistence/criteria/Expressions.java,LawOfDemeter,3,"Access to field `arg` on foreign value `(Constant<Character>) e2` (degree 1)",779,779
+openjpa\openjpa-persistence/src/main/java/org/apache/openjpa/persistence/criteria/Expressions.java,LawOfDemeter,3,"Call to `getDescribedType` on foreign value `can` (degree 2)",1255,1255
+openjpa\openjpa-persistence/src/main/java/org/apache/openjpa/persistence/criteria/Expressions.java,LawOfDemeter,3,"Access to field `_member` on foreign value `(PathImpl<?, ?>) e` (degree 1)",1377,1377
+openjpa\openjpa-persistence/src/main/java/org/apache/openjpa/persistence/criteria/Expressions.java,CognitiveComplexity,3,"The method 'toKernelExpression(ExpressionFactory, CriteriaQueryImpl<?>)' has a cognitive complexity of 35, current threshold is 15",1655,1655
+openjpa\openjpa-persistence/src/main/java/org/apache/openjpa/persistence/criteria/Expressions.java,CyclomaticComplexity,3,"The method 'toKernelExpression(ExpressionFactory, CriteriaQueryImpl<?>)' has a cyclomatic complexity of 19.",1655,1655
+openjpa\openjpa-persistence/src/main/java/org/apache/openjpa/persistence/criteria/Expressions.java,AvoidLiteralsInIfCondition,3,"Avoid using literals in if statements",1658,1658
+openjpa\openjpa-persistence/src/main/java/org/apache/openjpa/persistence/criteria/Expressions.java,LawOfDemeter,3,"Call to `getJavaType` on foreign value `e1` (degree 2)",1663,1663
+openjpa\openjpa-persistence/src/main/java/org/apache/openjpa/persistence/criteria/Expressions.java,LawOfDemeter,3,"Call to `getJavaType` on foreign value `e2` (degree 2)",1664,1664
+openjpa\openjpa-persistence/src/main/java/org/apache/openjpa/persistence/criteria/Expressions.java,LawOfDemeter,3,"Access to field `length` on foreign value `ParameterizedType.class.cast(e2JavaType).getActualTypeArguments()` (degree 1)",1671,1671
+openjpa\openjpa-persistence/src/main/java/org/apache/openjpa/persistence/criteria/Expressions.java,LawOfDemeter,3,"Call to `getJavaType` on foreign value `e1` (degree 2)",1695,1695
+openjpa\openjpa-persistence/src/main/java/org/apache/openjpa/persistence/criteria/Expressions.java,LawOfDemeter,3,"Access to field `e2` on foreign value `(Equal) .get(i)` (degree 1)",1723,1723
+openjpa\openjpa-persistence/src/main/java/org/apache/openjpa/persistence/criteria/Expressions.java,AvoidFieldNameMatchingMethodName,3,"Field otherwise has the same name as a method",1732,1732
+openjpa\openjpa-persistence/src/main/java/org/apache/openjpa/persistence/criteria/Expressions.java,AvoidFieldNameMatchingMethodName,3,"Field otherwise has the same name as a method",1802,1802

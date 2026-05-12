@@ -1,0 +1,155 @@
+classPath,ruleName,priority,description,startLine,endLine
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,ExcessiveImports,3,"A high number of imports can indicate a high degree of coupling within an object.",19,2590
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CouplingBetweenObjects,3,"High amount of different objects as members denotes a high coupling",19,2590
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,GodClass,3,"Possible God Class (WMC=575, ATFD=333, TCC=0.525%)",87,87
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CyclomaticComplexity,3,"The class 'JPQLExpressionBuilder' has a total cyclomatic complexity of 575 (highest 147).",87,87
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,TooManyMethods,3,"This class has too many methods, consider refactoring it.",89,2589
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,ConstructorCallsOverridableMethod,1,"Overridable method called during object construction: JPQLExpressionBuilder.getParsedQuery(*String) ",118,118
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `meta` on foreign value `ctx()` (degree 1)",148,148
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `schemaAlias` on foreign value `ctx()` (degree 1)",151,151
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,AvoidDuplicateLiterals,3,"The String literal "not-schema-name" appears 4 times in this file; the first occurrence is on line 206",206,206
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CognitiveComplexity,3,"The method 'getCandidateMetaData(JPQLNode)' has a cognitive complexity of 31, current threshold is 15",230,230
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CyclomaticComplexity,3,"The method 'getCandidateMetaData(JPQLNode)' has a cyclomatic complexity of 16.",230,230
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,NPathComplexity,3,"The method 'getCandidateMetaData(JPQLNode)' has an NPath complexity of 228, current threshold is 200",230,230
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `from` (degree 1)",245,245
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `from` (degree 1)",246,246
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `id` on foreign value `n` (degree 2)",248,248
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `id` on foreign value `n` (degree 2)",267,267
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Call to `getChild` on foreign value `n` (degree 2)",268,268
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `id` on foreign value `n` (degree 2)",270,270
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `parser` on foreign value `root()` (degree 1)",293,293
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `filter` on foreign value `exps` (degree 1)",310,310
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `parameterTypes` on foreign value `exps` (degree 1)",319,319
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `accessPath` on foreign value `exps` (degree 1)",321,321
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `hasInExpression` on foreign value `exps` (degree 1)",322,322
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",344,344
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `projections` on foreign value `exps` (degree 1)",355,355
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `projectionClauses` on foreign value `exps` (degree 1)",356,356
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `projectionAliases` on foreign value `exps` (degree 1)",357,357
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `projections` on foreign value `exps` (degree 1)",360,360
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `projectionClauses` on foreign value `exps` (degree 1)",361,361
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `parent` (degree 1)",381,381
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CognitiveComplexity,3,"The method 'evalProjectionsResultShape(JPQLNode, QueryExpressions, List<Value>, List<String>, List<String>)' has a cognitive complexity of 48, current threshold is 15",396,396
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CyclomaticComplexity,3,"The method 'evalProjectionsResultShape(JPQLNode, QueryExpressions, List<Value>, List<String>, List<String>)' has a cyclomatic complexity of 18.",396,396
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,NPathComplexity,3,"The method 'evalProjectionsResultShape(JPQLNode, QueryExpressions, List<Value>, List<String>, List<String>)' has an NPath complexity of 210, current threshold is 200",396,396
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,AvoidLiteralsInIfCondition,3,"Avoid using literals in if statements",404,404
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,EmptyCatchBlock,3,"Avoid empty catch blocks",435,437
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,AvoidCatchingGenericException,3,"Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block",435,435
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,AvoidLiteralsInIfCondition,3,"Avoid using literals in if statements",455,455
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `parent` (degree 1)",466,466
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,AvoidLiteralsInIfCondition,3,"Avoid using literals in if statements",480,480
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `shape` on foreign value `exps` (degree 1)",486,486
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `resultClass` on foreign value `exps` (degree 1)",487,487
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `operation` on foreign value `exps` (degree 1)",502,502
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `operation` on foreign value `exps` (degree 1)",504,504
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `operation` on foreign value `exps` (degree 1)",506,506
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `grouping` on foreign value `exps` (degree 1)",521,521
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `grouping` on foreign value `exps` (degree 1)",532,532
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `having` on foreign value `exps` (degree 1)",543,543
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CognitiveComplexity,3,"The method 'evalOrderingClauses(QueryExpressions)' has a cognitive complexity of 20, current threshold is 15",546,546
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CyclomaticComplexity,3,"The method 'evalOrderingClauses(QueryExpressions)' has a cyclomatic complexity of 10.",546,546
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `ordering` on foreign value `exps` (degree 1)",551,551
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `orderingClauses` on foreign value `exps` (degree 1)",552,552
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `orderingAliases` on foreign value `exps` (degree 1)",553,553
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `ascending` on foreign value `exps` (degree 1)",554,554
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `ordering` on foreign value `exps` (degree 1)",558,558
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `orderingClauses` on foreign value `exps` (degree 1)",559,559
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `orderingAliases` on foreign value `exps` (degree 1)",560,560
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `ascending` on foreign value `exps` (degree 1)",563,563
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,SimplifiedTernary,3,"This conditional expression can be simplified with || or &&",563,564
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `orderingClauses` on foreign value `exps` (degree 1)",568,568
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `orderingClauses` on foreign value `exps` (degree 1)",569,569
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `projections` on foreign value `exps` (degree 1)",571,571
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `projectionAliases` on foreign value `exps` (degree 1)",572,572
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `orderingAliases` on foreign value `exps` (degree 1)",573,573
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `ordering` on foreign value `exps` (degree 1)",574,574
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `projections` on foreign value `exps` (degree 1)",574,574
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CyclomaticComplexity,3,"The method 'evalSelectClause(QueryExpressions)' has a cyclomatic complexity of 12.",582,582
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `operation` on foreign value `exps` (degree 1)",583,583
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `distinct` on foreign value `exps` (degree 1)",591,591
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `distinct` on foreign value `exps` (degree 1)",594,594
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `parent` on foreign value `selectClause` (degree 1)",606,606
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `distinct` on foreign value `exps` (degree 1)",607,607
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `distinct` on foreign value `exps` (degree 1)",623,623
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `projections` on foreign value `exps` (degree 1)",624,624
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `projections` on foreign value `exps` (degree 1)",629,629
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `projectionAliases` on foreign value `exps` (degree 1)",630,630
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `projectionClauses` on foreign value `exps` (degree 1)",631,631
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `meta` on foreign value `ctx()` (degree 1)",640,640
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CyclomaticComplexity,3,"The method 'evalFetchJoins(QueryExpressions)' has a cyclomatic complexity of 10.",645,645
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `fetchPaths` on foreign value `exps` (degree 1)",668,668
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `fetchInnerPaths` on foreign value `exps` (degree 1)",671,671
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `from` (degree 1)",712,712
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `from` (degree 1)",713,713
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `id` on foreign value `node` (degree 2)",715,715
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `id` on foreign value `node` (degree 2)",717,717
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `id` on foreign value `node` (degree 2)",719,719
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `id` on foreign value `node` (degree 2)",721,721
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `id` on foreign value `node` (degree 2)",723,723
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,AvoidLiteralsInIfCondition,3,"Avoid using literals in if statements",835,835
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,AvoidLiteralsInIfCondition,3,"Avoid using literals in if statements",879,879
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,AssignmentInOperand,3,"Avoid assignments in operands",909,909
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,AssignmentInOperand,3,"Avoid assignments in operands",911,911
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,AssignmentInOperand,3,"Avoid assignments in operands",913,913
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,SimplifyBooleanReturns,3,"This if statement can be replaced by `return {condition};`",944,945
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,NcssCount,3,"The method 'eval(JPQLNode)' has a NCSS line count of 365.",988,988
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CognitiveComplexity,3,"The method 'eval(JPQLNode)' has a cognitive complexity of 105, current threshold is 15",988,988
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CyclomaticComplexity,3,"The method 'eval(JPQLNode)' has a cyclomatic complexity of 147.",988,988
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,NPathComplexity,3,"The method 'eval(JPQLNode)' has an NPath complexity of 287, current threshold is 200",988,988
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `parent` on foreign value `node` (degree 1)",1233,1233
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `parent` on foreign value `node` (degree 1)",1233,1233
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,AvoidLiteralsInIfCondition,3,"Avoid using literals in if statements",1321,1321
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,NullAssignment,3,"Assigning an Object to null is a code smell.  Consider refactoring.",1326,1326
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,AvoidLiteralsInIfCondition,3,"Avoid using literals in if statements",1333,1333
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",1350,1350
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,AvoidLiteralsInIfCondition,3,"Avoid using literals in if statements",1350,1350
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",1360,1360
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",1361,1361
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,AvoidLiteralsInIfCondition,3,"Avoid using literals in if statements",1377,1377
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",1387,1387
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,AvoidLiteralsInIfCondition,3,"Avoid using literals in if statements",1387,1387
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,AvoidLiteralsInIfCondition,3,"Avoid using literals in if statements",1398,1398
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,SimplifyBooleanReturns,3,"This if statement can be replaced by `return !{condition} || {elseBranch};`",1549,1550
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CyclomaticComplexity,3,"The method 'assertQueryExtensions(String)' has a cyclomatic complexity of 10.",1580,1580
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CyclomaticComplexity,3,"The method 'setImplicitTypes(Value, Value, Class<?>, Resolver, OrderedMap<Object, Class<?>>, String)' has a cyclomatic complexity of 13.",1622,1622
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,NPathComplexity,3,"The method 'setImplicitTypes(Value, Value, Class<?>, Resolver, OrderedMap<Object, Class<?>>, String)' has an NPath complexity of 1152, current threshold is 200",1622,1622
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `parser` on foreign value `node` (degree 1)",1678,1678
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `from` on foreign value `subContext` (degree 1)",1692,1692
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `projections` on foreign value `subexp` (degree 1)",1697,1697
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `projections` on foreign value `subexp` (degree 1)",1698,1698
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CyclomaticComplexity,3,"The method 'getParameter(String, boolean, boolean)' has a cyclomatic complexity of 10.",1716,1716
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,AssignmentInOperand,3,"Avoid assignments in operands",1772,1772
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",1797,1797
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CognitiveComplexity,3,"The method 'getIdentifier(JPQLNode)' has a cognitive complexity of 25, current threshold is 15",1804,1804
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CyclomaticComplexity,3,"The method 'getIdentifier(JPQLNode)' has a cyclomatic complexity of 12.",1804,1804
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CyclomaticComplexity,3,"The method 'validateMapPath(JPQLNode, JPQLNode)' has a cyclomatic complexity of 10.",1852,1852
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CyclomaticComplexity,3,"The method 'getGeneralIdentifier(JPQLNode, boolean)' has a cyclomatic complexity of 14.",1883,1883
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `parent` on foreign value `node` (degree 1)",1896,1896
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",1948,1948
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,AvoidCatchingGenericException,3,"Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block",1993,1993
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CognitiveComplexity,3,"The method 'getPath(JPQLNode, boolean, boolean)' has a cognitive complexity of 17, current threshold is 15",2039,2039
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CyclomaticComplexity,3,"The method 'getPath(JPQLNode, boolean, boolean)' has a cyclomatic complexity of 12.",2039,2039
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `subquery` on foreign value `ctx()` (degree 1)",2053,2053
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",2072,2072
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",2074,2074
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",2075,2075
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",2078,2078
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",2126,2126
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",2141,2141
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",2163,2163
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `parsed` on foreign value `ctx()` (degree 1)",2215,2215
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",2258,2258
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,AvoidLiteralsInIfCondition,3,"Avoid using literals in if statements",2258,2258
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",2282,2282
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",2287,2287
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",2291,2291
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",2294,2294
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",2298,2298
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",2302,2302
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",2314,2314
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `children` on foreign value `node` (degree 1)",2314,2314
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,TooManyMethods,3,"This class has too many methods, consider refactoring it.",2326,2477
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,LawOfDemeter,3,"Access to field `jjtNodeName` on foreign value `` (degree 1)",2436,2436
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CognitiveComplexity,3,"The method 'validateParameters()' has a cognitive complexity of 15, current threshold is 15",2548,2548
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CyclomaticComplexity,3,"The method 'validateParameters()' has a cyclomatic complexity of 12.",2548,2548
+openjpa\openjpa-kernel/src/main/java/org/apache/openjpa/kernel/jpql/JPQLExpressionBuilder.java,CollapsibleIfStatements,3,"This if statement could be combined with its parent",2574,2577

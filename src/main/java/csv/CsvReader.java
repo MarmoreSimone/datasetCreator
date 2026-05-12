@@ -35,7 +35,7 @@ public class CsvReader {
         int limit = (int) Math.ceil(allReleases.size() * releasePercentage);
 
         if (!allReleases.isEmpty()) {
-           // System.out.println("File CSV letto con successo. Release selezionate: " + limit +" (cioè il " + (releasePercentage * 100) + "% del totale).");
+           System.out.println("File CSV letto con successo. Release selezionate: " + limit +" (cioè il " + (releasePercentage * 100) + "% del totale).");
         }
 
         return allReleases.subList(0, limit);
