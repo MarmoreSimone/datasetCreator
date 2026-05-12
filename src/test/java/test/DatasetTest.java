@@ -2,6 +2,9 @@ package test;
 
 import entity.ClassMetrics;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,9 +12,17 @@ import java.util.Map;
 
 public class DatasetTest {
 
+    private static final String DATASET_PATH = "src/main/java/outputs/openjpa_dataset.csv";
+
     private DatasetTest() {}
 
-    private static boolean isValidRow(ClassMetrics current) {
+    static void main(){
+
+        List<ClassMetrics> classMetricsList = readClassMetricsFromCsv(DATASET_PATH);
+        validateDatasetInMemory(classMetricsList);
+    }
+
+    public static boolean isValidRow(ClassMetrics current) {
 
         // 1. Validazione LOC (Linee di codice)
         if (current.getLoc() <= 0 || current.getLocAddedPartial() < 0 || current.getLocAddedTotal() < 0) {
@@ -187,5 +198,65 @@ public class DatasetTest {
             System.out.println("✅ VALIDAZIONE COMPLETATA CON SUCCESSO! I dati in memoria (inclusi Age e ChgSet) sono matematicamente perfetti.");
             return true;
         }
+    }
+
+    public static List<ClassMetrics> readClassMetricsFromCsv(String filePath) {
+        List<ClassMetrics> dataset = new ArrayList<>();
+        String line;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            // Salta l'intestazione (header)
+            br.readLine();
+
+            while ((line = br.readLine()) != null) {
+                // Usa la virgola come separatore
+                String[] values = line.split(",");
+
+                // Mappatura basata sull'ordine delle colonne del tuo CsvExporter:
+                // 0: ReleaseID, 1: version, 2: ClassName (filePath)
+                String releaseID = values[0];
+                String version = values[1];
+                String className = values[2];
+
+                // Crea l'oggetto usando il costruttore (filePath, releaseID, version)
+                ClassMetrics metrics = new ClassMetrics(className, releaseID, version);
+
+                // Mappatura dei campi numerici
+                metrics.setLoc(Integer.parseInt(values[3]));
+                metrics.setNrTotal(Integer.parseInt(values[4]));
+                metrics.setNrPartial(Integer.parseInt(values[5]));
+                metrics.setnFixTotal(Integer.parseInt(values[6]));
+                metrics.setnFixPartial(Integer.parseInt(values[7]));
+                metrics.setnAuthTotal(Integer.parseInt(values[8]));
+                metrics.setnAuthPartial(Integer.parseInt(values[9]));
+                metrics.setLocAddedTotal(Integer.parseInt(values[10]));
+                metrics.setLocAddedPartial(Integer.parseInt(values[11]));
+                metrics.setChurnTotal(Integer.parseInt(values[12]));
+                metrics.setChurnPartial(Integer.parseInt(values[13]));
+                metrics.setMaxChurnTotal(Integer.parseInt(values[14]));
+                metrics.setMaxChurnPartial(Integer.parseInt(values[15]));
+                metrics.setAvgChurnTotal(Integer.parseInt(values[16]));
+                metrics.setAvgChurnPartial(Integer.parseInt(values[17]));
+                metrics.setAge(Integer.parseInt(values[18]));
+                metrics.setChgSetTotal(Integer.parseInt(values[19]));
+                metrics.setChgSetPartial(Integer.parseInt(values[20]));
+                metrics.setMaxChgSetTotal(Integer.parseInt(values[21]));
+                metrics.setMaxChgSetPartial(Integer.parseInt(values[22]));
+                metrics.setAvgChgSetTotal(Integer.parseInt(values[23]));
+                metrics.setAvgChgSetPartial(Integer.parseInt(values[24]));
+                metrics.setSmells(Integer.parseInt(values[25]));
+
+                // Gestione del campo Buggy
+                if (values.length > 26 && (values[26].equalsIgnoreCase("yes") || values[26].equalsIgnoreCase("true"))) {
+                    metrics.setBuggy();
+                }
+
+                dataset.add(metrics);
+            }
+        } catch (IOException | NumberFormatException e) {
+            System.err.println("Errore durante la lettura o il parsing del CSV: " + e.getMessage());
+        }
+
+        return dataset;
     }
 }

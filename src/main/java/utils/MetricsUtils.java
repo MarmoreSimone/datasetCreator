@@ -8,7 +8,6 @@ import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.diff.*;
-import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.patch.FileHeader;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -16,7 +15,6 @@ import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.EmptyTreeIterator;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;

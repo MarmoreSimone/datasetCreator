@@ -10,14 +10,10 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.revwalk.RevCommit;
 import utils.*;
-
 import java.util.*;
 import java.util.stream.Collectors;
-
 import metrics.ComputeMetrics;
-
 import static labeling.Szz.applySzzOracle;
-import static test.DatasetTest.validateDatasetInMemory;
 import static utils.MetricsUtils.countLocInClass;
 import static utils.MetricsUtils.getJavaFilePaths;
 
@@ -112,8 +108,6 @@ public class Main {
                     // calcolo gli smell della release corrente
                     releaseSmellsCache.computeIfAbsent(currentTag, k -> MetricsUtils.getSmells(REPO_OPENJPA_PATH));
 
-                    //todo
-                    //togli
                     String predID = (logicalPredecessor != null) ? logicalPredecessor.getReleaseID() : "NONE";
 
                     // itero su tutte le classi
@@ -123,7 +117,7 @@ public class Main {
                         metrics.setPredecessorID(predID);
                         ComputeMetrics.computeMetrics(metrics, git, buggyTicketsID, currentReleaseId, finalPreviousReleaseHash, rel.getDate());
 
-                        // Imposto gli smell presi all'inizio (dal predecessore logico)
+                        // imposto gli smell presi all'inizio (dal predecessore logico)
                         metrics.setSmells(currentSmellsMap.getOrDefault(filePath, 0));
 
                         datasetFinale.add(metrics);
@@ -139,10 +133,8 @@ public class Main {
                 git.reset().setMode(org.eclipse.jgit.api.ResetCommand.ResetType.HARD).setRef("master").call();
                 System.out.println("Ripristino completato");
 
-                validateDatasetInMemory(datasetFinale);
                 CsvExporter.exportToCsv(datasetFinale, OUTPUT_DATASET_PATH);
             }
-
         } catch (Exception e) {
             System.err.println("Errore critico nell'esecuzione principale: " + e.getMessage());
         }

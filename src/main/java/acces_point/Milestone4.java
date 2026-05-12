@@ -27,7 +27,7 @@ public class Milestone4 {
     private static final String OUTPUT_SMELLS_INFO_PATH1 = "src/main/java/outputs/smell_classe_1.csv";
     private static final String OUTPUT_SMELLS_INFO_PATH2 = "src/main/java/outputs/smell_classe_2.csv";
 
-    public static void main(String[] args) {
+    public static void main() {
         try {
 
             Git git = GitUtils.openRepository(REPO_OPENJPA_PATH);
