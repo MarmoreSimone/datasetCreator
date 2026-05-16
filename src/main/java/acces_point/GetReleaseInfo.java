@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
-//codice del falessi paro paro
+//codice del falessi
 public class GetReleaseInfo {
 	
 	   private static Map<LocalDateTime, String> releaseNames;
@@ -68,7 +68,7 @@ public class GetReleaseInfo {
 		               fileWriter.append(",");
 		               fileWriter.append(releaseNames.get(releases.get(i)));
 		               fileWriter.append(",");
-		               fileWriter.append(releases.get(i).toString());
+						fileWriter.append(releases.get(i).toLocalDate().toString());
 		               fileWriter.append("\n");
 		            }
 

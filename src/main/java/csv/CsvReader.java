@@ -18,7 +18,7 @@ public class CsvReader {
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
-            var _ = br.readLine(); // Salta l'header, impiccio con var_ per smell sonarcloud
+            var _ = br.readLine(); // salta l'header, impiccio con var_ per smell sonarcloud
 
             while ((line = br.readLine()) != null) {
                 String[] values = line.split(";");
@@ -28,14 +28,14 @@ public class CsvReader {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Errore durante la lettura del file CSV: " + e.getMessage());
+            System.err.println("errore durante la lettura del file CSV delle release: " + e.getMessage());
         }
 
-        // Prendo solo la percentuale che mi interessa, arrotondando per eccesso
+        // prendo solo la percentuale che mi interessa, arrotondando per eccesso
         int limit = (int) Math.ceil(allReleases.size() * releasePercentage);
 
         if (!allReleases.isEmpty()) {
-           System.out.println("File CSV letto con successo. Release selezionate: " + limit +" (cioè il " + (releasePercentage * 100) + "% del totale).");
+           System.out.println("CSV delle release letto con successo. Release selezionate: " + limit +" (cioè il " + (releasePercentage * 100) + "% del totale).");
         }
 
         return allReleases.subList(0, limit);

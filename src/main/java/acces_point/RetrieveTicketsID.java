@@ -2,26 +2,26 @@ package acces_point;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+// codice del falessi modificato per recuperare anche le altre informazioni del ticket
 public class RetrieveTicketsID {
 
     private static final String PROJ_NAME = "OPENJPA";
+    private static final String OUTPUT_FILE_PATH = "src/main/java/outputs/jiraTicketsEnriched.csv";
     private static final int PAGE_SIZE = 1000;
 
     static void main() throws IOException, JSONException {
-        String outputFile = "src/main/java/outputs/jiraTicketsEnriched.csv";
-        System.out.printf("Inizio download ticket Jira per il progetto %s...%n", PROJ_NAME);
+        String outputFile = OUTPUT_FILE_PATH;
 
         try (PrintWriter writer = new PrintWriter(new FileWriter(outputFile))) {
             writer.println("TicketID,CreationDate,ResolutionDate,AffectedVersions");
             fetchAndWriteIssues(writer);
-            System.out.printf("%nCompletato! File salvato in: %s%n", outputFile);
+            System.out.printf("%nfile salvato in: %s%n", outputFile);
         }
     }
 
@@ -34,7 +34,7 @@ public class RetrieveTicketsID {
                     "https://issues.apache.org/jira/rest/api/2/search?jql=project=%%22%s%%22AND%%22issueType%%22=%%22Bug%%22AND(%%22status%%22=%%22closed%%22OR%%22status%%22=%%22resolved%%22)AND%%22resolution%%22=%%22fixed%%22&fields=key,resolutiondate,versions,created&startAt=%d&maxResults=%d",
                     PROJ_NAME, i, maxResults);
 
-            JSONObject json = readJsonFromUrl(url); // Assumi che questo metodo esista come prima
+            JSONObject json = readJsonFromUrl(url);
             JSONArray issues = json.getJSONArray("issues");
             total = json.getInt("total");
 
@@ -42,7 +42,7 @@ public class RetrieveTicketsID {
                 processAndWriteIssue(writer, issues.getJSONObject(k));
             }
 
-            System.out.printf("Scaricati %d ticket su %d...%n", i, total);
+            System.out.printf("scaricati %d ticket su %d%n", i, total);
         } while (i < total);
     }
 

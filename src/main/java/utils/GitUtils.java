@@ -59,7 +59,7 @@ public class GitUtils {
             if (tagRef == null) tagRef = repository.findRef(tagName);
             if (tagRef == null) throw new java.util.NoSuchElementException("Tag non trovato: " + tagName);
 
-            //estraggo il commit dal tag
+            // estraggo il commit dal tag
             Ref peeledRef = repository.getRefDatabase().peel(tagRef);
             commitId = peeledRef.getPeeledObjectId();
             if (commitId == null) commitId = tagRef.getObjectId();

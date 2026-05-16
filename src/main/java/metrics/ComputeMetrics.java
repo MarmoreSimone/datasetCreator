@@ -21,14 +21,14 @@ public class ComputeMetrics {
         try {
             Iterable<RevCommit> partialCommits;
             if (previousReleaseHash != null) {
-                // prendo solo i commit relativi alla release i-esima
+                // prendo solo i commit relativi alla release i-esima usando il range
                 partialCommits = git.log().addRange(previousReleaseHash, currentReleaseHash).addPath(metrics.getFilePath()).call();
             } else {
                 // caso in cui siamo nella prima release
                 partialCommits = git.log().add(currentReleaseHash).addPath(metrics.getFilePath()).call();
             }
 
-            // prendo tutti i commit dalla prima release ad ora
+            // prendo tutti i commit dalla prima release a ora
             Iterable<RevCommit> totalCommits = git.log().add(currentReleaseHash).addPath(metrics.getFilePath()).call();
 
             // calcolo delle metriche (true per i partial, false per i total)
@@ -55,10 +55,12 @@ public class ComputeMetrics {
             for (RevCommit commit : commits) {
                 nr++;
 
+                // vedo se all'interno del commento del commit c'è l'ID di un ticket di tipo bug
                 if (MetricsUtils.isCommitAFix(commit.getFullMessage(), buggyTicketList)) {
                     nFix++;
                 }
 
+                // recupero la mail dell'autore del commit
                 nAuth.add(commit.getAuthorIdent().getEmailAddress());
 
                 // recupero righe aggiunte eliminate e modificate

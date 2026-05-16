@@ -20,12 +20,12 @@ import static utils.MetricsUtils.getJavaFilePaths;
 
 public class Main {
 
-    private static final String RELEASES_FILE_PATH = "src/main/java/outputs/OPENJPAVersionInfo.csv";//file generato dal codice di falessi
-    private static final double RELEASES_PERCENTAGE = 0.34;//percentuale di release
-    private static final double RELEASES_PERCENTAGE_FOR_SZZ = 1;//percentuale di release su cui calcolare proportion
+    private static final double RELEASES_PERCENTAGE = 0.34;// percentuale di release
+    private static final double RELEASES_PERCENTAGE_FOR_SZZ = 1;// percentuale di release su cui calcolare proportion
     private static final String REPO_OPENJPA_PATH = "openjpa";
     private static final String OUTPUT_DATASET_PATH = "src/main/java/outputs/openjpa_dataset.csv";
-    private static final String BUGGY_TICKET_PATH = "src/main/java/outputs/jiraTicketsEnriched.csv";
+    private static final String BUGGY_TICKET_PATH = "src/main/java/outputs/jiraTicketsEnriched.csv";// csv con i ticket di tipo bug e tutte le info
+    private static final String RELEASES_FILE_PATH = "src/main/java/outputs/OPENJPAVersionInfo.csv";// csv con tutte le release del progetto
 
     public static void main(){
         try {
@@ -49,20 +49,20 @@ public class Main {
                 // recupero i tag delle release direttamente dal progetto
                 List<String> gitTags = GitUtils.getAllGitTags(git);
 
-                // cache per gli smell
+                // cache per gli smell, usata per non dover rifare il checkout alla release precedente solo per prendere gli smell
                 // mappa: tag della release -> mappa degli smell (classe -> numero di smell)
                 Map<String, Map<String, Integer>> releaseSmellsCache = new HashMap<>();
 
                 for (int i = 0; i < releases.size(); i++) {
                     ReleaseInfo rel = releases.get(i);
-                    System.out.println("Analisi Release: " + rel.getReleaseID() + " (" + rel.getDate() + ")");
+                    System.out.println("analisi Release: " + rel.getReleaseID() + " (" + rel.getDate() + ")");
 
-                    // trasformo, se serve, il tag nel formato interno al progetto
+                    // srasformo, se serve, il tag nel formato interno al progetto
                     String currentTag = GitUtils.findMatchingTag(rel.getReleaseID(), gitTags);
 
                     // se non trova il tag salta la release
                     if (currentTag == null) {
-                        System.out.println("Tag non trovato per la release " + rel.getReleaseID());
+                        System.out.println("tag non trovato per la release " + rel.getReleaseID());
                         continue;
                     }
 
@@ -71,7 +71,7 @@ public class Main {
 
                     // recupero tutti i classPath nella release i-esima
                     List<String> classPaths = getJavaFilePaths(REPO_OPENJPA_PATH);
-                    System.out.println("Totale classi: " + classPaths.size());
+                    System.out.println("totale classi: " + classPaths.size());
 
                     final ObjectId currentReleaseId = releaseCommit.getId();
 
@@ -82,7 +82,7 @@ public class Main {
                     String predTag = null;
                     // sonarCloud apprezza
                     if (logicalPredecessor != null && (predTag = GitUtils.findMatchingTag(logicalPredecessor.getReleaseID(), gitTags)) != null) {
-                        System.out.println("Confronto: " + currentTag + " --> " + predTag);
+                        System.out.println("confronto: " + currentTag + " --> " + predTag);
                         tempPreviousReleaseHash = GitUtils.getObjectIdFromTag(git, predTag);
                     }
 
@@ -94,7 +94,7 @@ public class Main {
                     if (predTag != null) {
                         // se non è in cache faccio il checkout calcolo e salvo gli smell nella cache
                         if (!releaseSmellsCache.containsKey(predTag)) {
-                            System.out.println("Calcolo smell per il predecessore " + predTag + " (Cache miss)");
+                            System.out.println("calcolo smell per il predecessore " + predTag + " (cache miss)");
                             GitUtils.checkoutToTag(git, predTag);
                             releaseSmellsCache.put(predTag, MetricsUtils.getSmells(REPO_OPENJPA_PATH));
                             // torno alla release corrente
@@ -105,7 +105,7 @@ public class Main {
 
                     final Map<String, Integer> currentSmellsMap = currentSmellsMapTemp;
 
-                    // calcolo gli smell della release corrente
+                    // calcolo gli smell della release corrente sull'ultimo commit
                     releaseSmellsCache.computeIfAbsent(currentTag, k -> MetricsUtils.getSmells(REPO_OPENJPA_PATH));
 
                     String predID = (logicalPredecessor != null) ? logicalPredecessor.getReleaseID() : "NONE";
@@ -126,7 +126,7 @@ public class Main {
                     System.out.println();
                 }
 
-                // FASE 3 SZZ: faccio il labeling finale usando iv e fv dei ticket buggy relativi ad una data classe
+                // FASE 3 SZZ: faccio il labeling finale usando iv e fv dei ticket buggy relativi a una data classe
                 applySzzOracle(datasetFinale, fileToBugsMap);
 
                 // ripristino al master

@@ -193,7 +193,7 @@ public class DatasetValidator {
             if (righeFallite.size() > 30) System.err.println("  ... e altri " + (righeFallite.size() - 30) + " errori.");
             return false;
         } else {
-            System.out.println("✅ VALIDAZIONE COMPLETATA CON SUCCESSO! I dati in memoria (inclusi Age e ChgSet) sono matematicamente perfetti.");
+            System.out.println("✅ VALIDAZIONE COMPLETATA CON SUCCESSO!");
             return true;
         }
     }
@@ -251,6 +251,7 @@ public class DatasetValidator {
 
                 dataset.add(metrics);
             }
+            System.out.println(dataset.size());
         } catch (IOException | NumberFormatException e) {
             System.err.println("Errore durante la lettura o il parsing del CSV: " + e.getMessage());
         }

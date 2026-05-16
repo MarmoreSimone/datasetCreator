@@ -63,7 +63,7 @@ public class MetricsUtils {
                 RevCommit parent = commit.getParent(0);
                 diffs = df.scan(parent.getTree(), commit.getTree());
             } else {
-                // Caso del primo commit assoluto del progetto
+                // caso del primo commit assoluto del progetto
                 diffs = df.scan(new EmptyTreeIterator(), new CanonicalTreeParser(null, repository.newObjectReader(), commit.getTree()));
             }
 
@@ -72,8 +72,8 @@ public class MetricsUtils {
                 org.eclipse.jgit.diff.EditList edits = fileHeader.toEditList();
 
                 for (org.eclipse.jgit.diff.Edit edit : edits) {
-                    int a = edit.getLengthA(); // Righe nel vecchio commit (Lato A)
-                    int b = edit.getLengthB(); // Righe nel nuovo commit (Lato B)
+                    int a = edit.getLengthA(); // righe nel vecchio commit (Lato A)
+                    int b = edit.getLengthB(); // righe nel nuovo commit (Lato B)
 
                     switch (edit.getType()) {
                         case INSERT:
@@ -83,7 +83,6 @@ public class MetricsUtils {
                             deleted += a;
                             break;
                         case REPLACE:
-                            // Calcolo MSR di precisione per le modifiche
                             int mod = Math.min(a, b);
                             modified += mod;
                             added += (b - mod);
@@ -123,7 +122,7 @@ public class MetricsUtils {
             return (int) reader.lines().count();
         } catch (IOException _) {
             System.err.println("Errore durante la lettura del file per contare le LOC: " + file.getPath());
-            return 0; // Se c'è un errore, restituiamo 0
+            return 0; // se c'è un errore, restituiamo 0
         }
     }
 
@@ -135,10 +134,10 @@ public class MetricsUtils {
             return walk
                     .filter(Files::isRegularFile)
                     .filter(p -> p.toString().toLowerCase().endsWith(".java"))
-                    // Escludiamo i test ma teniamo tutto il resto della struttura
+                    // escludiamo i test ma teniamo tutto il resto della struttura
                     .filter(p -> !p.toString().contains("/test/") && !p.toString().contains("\\test\\"))
                     // prendiamo il percorso dalla root del progetto in poi
-                    .map(p -> convertPath(projectRoot.relativize(p).toString()))//mantengo solo la parte relativa al file del progetto
+                    .map(p -> convertPath(projectRoot.relativize(p).toString()))// mantengo solo la parte relativa al file del progetto
                     .toList();
         }
     }
@@ -203,12 +202,12 @@ public class MetricsUtils {
                     diffs = df.scan(parent.getTree(), commit.getTree());
                 }
             } else {
-                // Primo commit
+                // primo commit
                 diffs = df.scan(new org.eclipse.jgit.treewalk.EmptyTreeIterator(),
                         new org.eclipse.jgit.treewalk.CanonicalTreeParser(null, git.getRepository().newObjectReader(), commit.getTree()));
             }
 
-            // La grandezza della lista è esattamente il numero di file toccati indipendentemente dal tipo di modifica
+            // la grandezza della lista è esattamente il numero di file toccati indipendentemente dal tipo di modifica
             changeSetSize = diffs.size();
 
         } catch (Exception e) {
@@ -229,16 +228,15 @@ public class MetricsUtils {
         config.addRuleSet("category/java/errorprone.xml");
 
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
-            // Aggiungiamo l'intera directory. PMD troverà automaticamente tutti i .java
+            // aggiungiamo l'intera directory. PMD troverà automaticamente tutti i .java
             pmd.files().addDirectory(Paths.get(repoPath));
 
             Report report = pmd.performAnalysisAndCollectReport();
 
-            // Iteriamo sulle violazioni direttamente come oggetti Java
             for (RuleViolation violation : report.getViolations()) {
                 String fullPath = violation.getFileId().getAbsolutePath();
 
-                // Puliamo il path per renderlo identico a quello che usi nel dataset
+                // casi in cui il path non corrisponda a quello usato nel dataset
                 String relativePath = cleanPath(fullPath, repoPath);
 
                 smellsMap.put(relativePath, smellsMap.getOrDefault(relativePath, 0) + 1);
@@ -251,10 +249,8 @@ public class MetricsUtils {
     }
 
     private static String cleanPath(String fullPath, String repoPath) {
-        // Uniformiamo i separatori per evitare bug tra Windows e Linux
         String cleanFullPath = fullPath.replace("\\", "/");
         String cleanRepoPath = repoPath.replace("\\", "/");
-
         int index = cleanFullPath.indexOf(cleanRepoPath);
         if (index != -1) {
             // +1 per rimuovere lo slash iniziale (es: da "/src/..." a "src/...")
@@ -263,29 +259,4 @@ public class MetricsUtils {
         return fullPath;
     }
 
-    // mi salvo gli smell per evitare di dover fare i checkout settordici volte
-    public static Map<String, Integer> getPredecessorSmells(Git git, String predTag, String repoPath, Map<String, Map<String, Integer>> smellsCache) throws Exception {
-
-        // Caso 1: È la primissima release, non ha predecessori
-        if (predTag == null) {
-            System.out.println("Nessun predecessore: Smells non calcolati (assunti a 0).");
-            return new HashMap<>();
-        }
-
-        // Caso 2: Cache Hit (Gli smells di questo tag li abbiamo già calcolati in passato)
-        if (smellsCache.containsKey(predTag)) {
-            System.out.println("⚡ HIT CACHE: Smells per " + predTag + " recuperati istantaneamente (NO Checkout).");
-            return smellsCache.get(predTag);
-        }
-
-        // Caso 3: Cache Miss (Dobbiamo fare il checkout su Git e calcolarli per la prima volta)
-        System.out.println("Calcolo smells per " + predTag + "...");
-        GitUtils.checkoutToTag(git, predTag);
-        Map<String, Integer> calculatedSmells = MetricsUtils.getSmells(repoPath);
-
-        // Salviamo il risultato nella cache prima di restituirlo
-        smellsCache.put(predTag, calculatedSmells);
-
-        return calculatedSmells;
-    }
 }
