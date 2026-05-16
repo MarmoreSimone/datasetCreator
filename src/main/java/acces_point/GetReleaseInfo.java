@@ -54,7 +54,7 @@ public class GetReleaseInfo {
 		         FileWriter fileWriter = null;
 			 try {
 		            fileWriter = null;
-		            String outname = "src/main/java/outputs/" + projName + "VersioInfo.csv";
+		            String outname = "src/main/java/outputs/" + projName + "VersionInfo.csv";
 						    //Name of CSV for output
 						    fileWriter = new FileWriter(outname);
 		            fileWriter.append("Index,Version ID,Version Name,Date");

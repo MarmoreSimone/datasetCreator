@@ -21,7 +21,7 @@ public class CsvReader {
             var _ = br.readLine(); // salta l'header, impiccio con var_ per smell sonarcloud
 
             while ((line = br.readLine()) != null) {
-                String[] values = line.split(";");
+                String[] values = line.split(",");
                 if (values.length >= 4) {
 
                     allReleases.add(new ReleaseInfo(values[0].trim(), values[2].trim(), values[3].trim()));
